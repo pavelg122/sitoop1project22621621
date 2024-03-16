@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class FileHandlerImpl implements FileHandler{
+    private File currentFile;
     private StringBuilder fileContent = new StringBuilder();
    private boolean isFileOpen = false;
     @Override
@@ -13,7 +14,7 @@ public class FileHandlerImpl implements FileHandler{
 
     @Override
     public void open(String filePath) throws IOException {
-        File currentFile = new File(filePath);
+        currentFile = new File(filePath);
         if(!currentFile.exists()){
             currentFile.createNewFile();
         }
@@ -31,15 +32,15 @@ public class FileHandlerImpl implements FileHandler{
     }
 
     @Override
-    public void close(File currentFile) {
-        currentFile = null;
+    public void close() {
         isFileOpen = false;
         fileContent = null;
         System.out.println("Successfully closed " + currentFile.getName());
+        currentFile = null;
     }
 
     @Override
-    public void saveInFile(File currentFile) {
+    public void saveInFile() {
 try{
     PrintWriter writer = new PrintWriter(currentFile);
     writer.write(fileContent.toString());
@@ -53,6 +54,7 @@ try{
         try{
             PrintWriter writer = new PrintWriter(newFile);
             writer.write(fileContent.toString());
+            writer.close();
             System.out.println("Successfully saved " + newFile.getName());
         }catch(IOException e){
             System.out.println("Error saving file: " + e.getMessage());
@@ -76,5 +78,9 @@ try{
     public void exit() {
         System.out.println("Exiting the program...");
         System.exit(0);
+    }
+
+    public void printFileContent(){
+        System.out.print(fileContent.toString());
     }
 }

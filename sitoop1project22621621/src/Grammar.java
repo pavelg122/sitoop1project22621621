@@ -58,7 +58,15 @@ public class Grammar implements GrammarCommands{
     }
 
     @Override
-    public void removeRule(int id, int number) {
-
+    public void removeRule(int id, int number) throws Exception {
+        if(number<rules.size()){
+            int counter=1;
+        for(Rule rule:rules){
+            if(number==counter){
+                rules.remove(rule);
+            }
+            counter++;
+        }
+        }else throw new Exception("Index of rule doesn't exist");
     }
 }

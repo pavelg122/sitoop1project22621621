@@ -4,7 +4,7 @@ public interface GrammarCommands {
     void print(int id);
     void save(int id, String fileName);
     void addRule(int id, String rule);
-    void removeRule(int id, int number);
+    void removeRule(int id, int number) throws Exception;
     //void union(int id1, int id2);
     //void concat(int id1, int id2);
    // void chomsky(int id);

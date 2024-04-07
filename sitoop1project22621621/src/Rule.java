@@ -9,4 +9,12 @@ public class Rule {
         this.nonterminals = nonterminals;
         this.terminals = terminals;
     }
+
+    public String getNonterminals() {
+        return nonterminals;
+    }
+
+    public String[] getTerminals() {
+        return terminals;
+    }
 }

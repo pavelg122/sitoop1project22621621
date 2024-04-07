@@ -19,8 +19,10 @@ public class FileHandlerImpl implements FileHandler{
             currentFile.createNewFile();
         }
         try {
+            Grammar grammar = new Grammar();
             Scanner scanner = new Scanner(currentFile);
             while (scanner.hasNextLine()) {
+                grammar.addRule(grammar.getId(),scanner.nextLine());
                 fileContent.append(scanner.nextLine()).append("\n");
             }
             isFileOpen = true;

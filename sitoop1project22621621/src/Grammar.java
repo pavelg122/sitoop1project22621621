@@ -1,16 +1,18 @@
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Grammar implements GrammarCommands{
-    int id;
+    private long id;
     private Set<Rule> rules = new HashSet<>();
 
-    public Grammar(int id) {
-        this.id = id;
+    public Grammar() {
+        this.id = generateUniqueID();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -37,17 +39,17 @@ public class Grammar implements GrammarCommands{
     }
 
     @Override
-    public void print(int id) {
+    public void print(long id) {
 
     }
 
     @Override
-    public void save(int id, String fileName) {
+    public void save(long id, String fileName) {
 
     }
 
     @Override
-    public void addRule(int id, String rule) {
+    public void addRule(long id, String rule) {
         String[] ruleParts = rule.split("→");
         String[] terminals = ruleParts[1].split("|");
       rules.add(new Rule(ruleParts[0],terminals));
@@ -58,7 +60,7 @@ public class Grammar implements GrammarCommands{
     }
 
     @Override
-    public void removeRule(int id, int number) throws Exception {
+    public void removeRule(long id, int number) throws Exception {
         if(number<rules.size()){
             int counter=1;
         for(Rule rule:rules){
@@ -68,5 +70,13 @@ public class Grammar implements GrammarCommands{
             counter++;
         }
         }else throw new Exception("Index of rule doesn't exist");
+    }
+    public static long generateUniqueID(){
+        Random random = new Random();
+        AtomicLong atomicLong = new AtomicLong();
+
+        long id = atomicLong.incrementAndGet();
+
+        return Math.abs(random.nextLong()) + id;
     }
 }

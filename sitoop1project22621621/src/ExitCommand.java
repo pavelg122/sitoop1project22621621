@@ -1,7 +1,12 @@
 public class ExitCommand implements Command{
+    private FileHandler fileHandler;
+
+    public ExitCommand(FileHandler fileHandler) {
+        this.fileHandler = fileHandler;
+    }
+
     @Override
     public void invoke(String[] input) {
-        System.out.println("Exiting the program...");
-        System.exit(0);
+        fileHandler.exit();
     }
 }

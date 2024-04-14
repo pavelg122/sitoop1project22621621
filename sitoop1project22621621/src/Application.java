@@ -3,8 +3,10 @@ import java.util.*;
 
 public class Application {
     public static void main(String[] args) throws Exception {
-        /*FileHandlerImpl fileHandler= new FileHandlerImpl();
-        fileHandler.open("C:\\Users\\pavel\\Desktop\\testgrammar.txt");
+        Set<Grammar> grammars = new HashSet<>();
+        FileHandler fileHandler= new FileHandlerImpl();
+        GrammarCommands grammarCommands = new GrammarCommandsImpl(grammars);
+        /*fileHandler.open("C:\\Users\\pavel\\Desktop\\testgrammar.txt");
         fileHandler.printFileContent();
         fileHandler.saveAs("C:\\Users\\pavel\\Desktop\\testgrammar1.txt");
         fileHandler.close();*/
@@ -17,11 +19,11 @@ public class Application {
         //grammar.addRule(123,"B → bB");
         //grammar.removeRule(123,2);
         Map<String,Command> commands = new HashMap<>();
-        commands.put("open",new OpenCommand());
-        commands.put("close",new CloseCommand());
-        commands.put("saveas", new SaveAsCommand());
-        commands.put("help", new HelpCommand());
-        commands.put("exit", new ExitCommand());
+        commands.put("open",new OpenCommand(fileHandler));
+        commands.put("close",new CloseCommand(fileHandler));
+        commands.put("saveas", new SaveAsCommand(fileHandler));
+        commands.put("help", new HelpCommand(fileHandler));
+        commands.put("exit", new ExitCommand(fileHandler));
         Scanner scanner = new Scanner(System.in);
         while(scanner.hasNextLine()){
             String line = scanner.nextLine();

@@ -18,30 +18,24 @@ for (Grammar grammar:grammarSet){
     @Override
     public void print(long id) {
     Grammar grammar = getGrammar(id);
-    Set<Rule> rules = grammar.getRules();
-    StringBuilder stringBuilder=  new StringBuilder();
-    for(Rule rule:rules){
-        stringBuilder.append(rule.getNonterminals()).append(" → ");
-        String[] terminals = rule.getTerminals();
-        for(String terminal:terminals){
-            stringBuilder.append(terminal).append(" | ");
-        }
-    }
-    System.out.println(stringBuilder.toString());
+    grammar.print();
     }
 
     @Override
     public void save(long id, String fileName) {
-
+     Grammar grammar = getGrammar(id);
     }
 
     @Override
     public void addRule(long id, String rule) {
+        Grammar grammar = getGrammar(id);
+        grammar.addRule(rule);
     }
 
     @Override
     public void removeRule(long id, int number) throws Exception {
-
+Grammar grammar =getGrammar(id);
+grammar.removeRule(number);
     }
 
     private Grammar getGrammar(long id){

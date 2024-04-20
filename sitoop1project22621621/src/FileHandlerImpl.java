@@ -22,7 +22,7 @@ public class FileHandlerImpl implements FileHandler{
             Grammar grammar = new Grammar();
             Scanner scanner = new Scanner(currentFile);
             while (scanner.hasNextLine()) {
-                grammar.addRule(grammar.getId(),scanner.nextLine());
+                grammar.addRule(scanner.nextLine());
                 fileContent.append(scanner.nextLine()).append("\n");
             }
             isFileOpen = true;

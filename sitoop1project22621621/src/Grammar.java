@@ -1,10 +1,7 @@
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Grammar implements GrammarCommands{
+public class Grammar{
     private long id;
     private Set<Rule> rules = new HashSet<>();
 
@@ -33,34 +30,48 @@ public class Grammar implements GrammarCommands{
         return Objects.hash(id);
     }
 
-    @Override
-    public void list() {
+
+
+
+    public void print() {
+        StringBuilder stringBuilder=  new StringBuilder();
+        for(Rule rule:rules){
+            for(String nonterminal: rule.getNonterminals()){
+                stringBuilder.append(nonterminal);
+            }
+            stringBuilder.append(" → ");
+            String[] terminals = rule.getTerminals();
+            for(String terminal:terminals){
+                stringBuilder.append(terminal).append(" | ");
+            }
+        }
+        System.out.println(stringBuilder.toString());
+    }
+
+
+    public void save(String fileName) {
 
     }
 
-    @Override
-    public void print(long id) {
 
-    }
-
-    @Override
-    public void save(long id, String fileName) {
-
-    }
-
-    @Override
-    public void addRule(long id, String rule) {
-        String[] ruleParts = rule.split("→");
+    public void addRule(String rule) {
+        String[] ruleParts = rule.split("→",2);
+        String[] nonterminals = new String[100];
+        for (int i = 0; i < ruleParts[0].length(); i++) {
+            nonterminals[i] = String.valueOf(ruleParts[0].charAt(i));
+        }
         String[] terminals = ruleParts[1].split("|");
-      rules.add(new Rule(ruleParts[0],terminals));
-      /*System.out.println(ruleParts[0]);
+      rules.add(new Rule(nonterminals,terminals));
+        for(String nonterminal:nonterminals){
+            System.out.println(nonterminal);
+        }
       for(String terminal:terminals){
           System.out.println(terminal);
-      }*/
+      }
     }
 
-    @Override
-    public void removeRule(long id, int number) throws Exception {
+
+    public void removeRule(int number) throws Exception {
         if(number<rules.size()){
             int counter=1;
         for(Rule rule:rules){

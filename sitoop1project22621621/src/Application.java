@@ -19,9 +19,9 @@ public class Application {
         //grammar.addRule(123,"B → bB");
         //grammar.removeRule(123,2);
         Map<String,Command> commands = new HashMap<>();
-        commands.put("open",new OpenCommand(fileHandler));
-        commands.put("close",new CloseCommand(fileHandler));
-        commands.put("saveas", new SaveAsCommand(fileHandler));
+        commands.put("open",new OpenCommand(fileHandler,grammarCommands));
+        commands.put("close",new CloseCommand(fileHandler,grammarCommands));
+        commands.put("saveas", new SaveAsCommand(fileHandler,grammarCommands));
         commands.put("help", new HelpCommand(fileHandler));
         commands.put("exit", new ExitCommand(fileHandler));
         Scanner scanner = new Scanner(System.in);

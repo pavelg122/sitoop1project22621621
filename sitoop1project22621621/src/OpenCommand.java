@@ -3,8 +3,9 @@ import java.util.Arrays;
 
 public class OpenCommand implements Command{
     private FileHandler fileHandler;
+    private GrammarCommands grammarCommands;
 
-    public OpenCommand(FileHandler fileHandler) {
+    public OpenCommand(FileHandler fileHandler,GrammarCommands grammarCommands) {
         this.fileHandler = fileHandler;
     }
 

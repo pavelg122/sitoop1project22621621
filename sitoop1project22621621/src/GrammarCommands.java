@@ -5,11 +5,11 @@ public interface GrammarCommands {
     void save(long id, String fileName);
     void addRule(long id, String rule);
     void removeRule(long id, int number) throws Exception;
-    //void union(int id1, int id2);
-    //void concat(int id1, int id2);
-   // void chomsky(int id);
-    //void cyk(int id);
-    //void iter(int id);
-    //void empty(int id);
-    //void chomskify(int id);
+    //void union(long id1, long id2);
+    //void concat(long id1, long id2);
+   // void chomsky(long id);
+    //void cyk(long id);
+    //void iter(long id);
+    //void empty(long id);
+    //void chomskify(long id);
 }

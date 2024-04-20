@@ -85,4 +85,24 @@ try{
     public void printFileContent(){
         System.out.print(fileContent.toString());
     }
+
+    public File getCurrentFile() {
+        return currentFile;
+    }
+
+    public void setCurrentFile(File currentFile) {
+        this.currentFile = currentFile;
+    }
+
+    public StringBuilder getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(StringBuilder fileContent) {
+        this.fileContent = fileContent;
+    }
+
+    public void setFileOpen(boolean fileOpen) {
+        isFileOpen = fileOpen;
+    }
 }

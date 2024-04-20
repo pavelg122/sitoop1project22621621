@@ -7,6 +7,7 @@ public class OpenCommand implements Command{
 
     public OpenCommand(FileHandler fileHandler,GrammarCommands grammarCommands) {
         this.fileHandler = fileHandler;
+        this.grammarCommands=grammarCommands;
     }
 
     @Override

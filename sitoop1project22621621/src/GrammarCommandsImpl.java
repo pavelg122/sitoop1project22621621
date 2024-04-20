@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Set;
 
 public class GrammarCommandsImpl implements GrammarCommands{
@@ -22,8 +24,9 @@ for (Grammar grammar:grammarSet){
     }
 
     @Override
-    public void save(long id, String fileName) {
+    public void save(long id, String fileName) throws FileNotFoundException {
      Grammar grammar = getGrammar(id);
+        grammar.save(fileName);
     }
 
     @Override
@@ -38,7 +41,7 @@ Grammar grammar =getGrammar(id);
 grammar.removeRule(number);
     }
 
-    private Grammar getGrammar(long id){
+    public Grammar getGrammar(long id){
         Grammar foundGrammar = null;
         for (Grammar grammar:grammarSet){
             if(grammar.getId() == id){foundGrammar = grammar;}

@@ -1,8 +1,9 @@
+import java.io.FileNotFoundException;
 
 public interface GrammarCommands {
     void list();
     void print(long id);
-    void save(long id, String fileName);
+    void save(long id, String fileName) throws FileNotFoundException;
     void addRule(long id, String rule);
     void removeRule(long id, int number) throws Exception;
     //void union(long id1, long id2);
@@ -12,4 +13,5 @@ public interface GrammarCommands {
     //void iter(long id);
     //void empty(long id);
     //void chomskify(long id);
+    Grammar getGrammar(long id);
 }

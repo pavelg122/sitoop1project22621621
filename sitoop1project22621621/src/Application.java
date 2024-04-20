@@ -11,10 +11,10 @@ public class Application {
         fileHandler.saveAs("C:\\Users\\pavel\\Desktop\\testgrammar1.txt");
         fileHandler.close();*/
         //fileHandler.printFileContent();
-        Grammar grammar = new Grammar();
+        /*Grammar grammar = new Grammar();
         System.out.println(grammar.getId() + "\n");
         Grammar grammar1 = new Grammar();
-        System.out.println(grammar1.getId());
+        System.out.println(grammar1.getId());*/
         //grammar.addRule(,"A → aA");
         //grammar.addRule(123,"B → bB");
         //grammar.removeRule(123,2);

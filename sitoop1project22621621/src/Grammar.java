@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -34,8 +36,11 @@ public class Grammar{
 
 
     public void print() {
+        int counter = 0;
         StringBuilder stringBuilder=  new StringBuilder();
         for(Rule rule:rules){
+            counter++;
+            stringBuilder.append("( " + counter + " ) ");
             for(String nonterminal: rule.getNonterminals()){
                 stringBuilder.append(nonterminal);
             }
@@ -44,13 +49,28 @@ public class Grammar{
             for(String terminal:terminals){
                 stringBuilder.append(terminal).append(" | ");
             }
+            stringBuilder.append("\n");
         }
-        System.out.println(stringBuilder.toString());
+        System.out.println(stringBuilder);
     }
 
 
-    public void save(String fileName) {
+    public void save(String fileName) throws FileNotFoundException {
 
+        PrintWriter printWriter = new PrintWriter(fileName);
+        StringBuilder stringBuilder=  new StringBuilder();
+        for(Rule rule: rules){
+            for(String nonterminal: rule.getNonterminals()){
+                stringBuilder.append(nonterminal);
+            }
+            stringBuilder.append(" → ");
+            String[] terminals = rule.getTerminals();
+            for(String terminal:terminals){
+                stringBuilder.append(terminal).append(" | ");
+            }
+            stringBuilder.append("\n");
+        }
+        printWriter.write(stringBuilder.toString());
     }
 
 

@@ -1,8 +1,9 @@
 public class ChomskifyCommand implements Command{
     private GrammarCommands grammarCommands;
-
-    public ChomskifyCommand(GrammarCommands grammarCommands) {
+    private FileHandler fileHandler;
+    public ChomskifyCommand(GrammarCommands grammarCommands,FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
+        this.fileHandler = fileHandler;
     }
 
     @Override

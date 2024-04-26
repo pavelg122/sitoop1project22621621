@@ -1,8 +1,9 @@
 public class IterCommand implements Command{
     private GrammarCommands grammarCommands;
-
-    public IterCommand(GrammarCommands grammarCommands) {
+    private FileHandler fileHandler;
+    public IterCommand(GrammarCommands grammarCommands, FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
+        this.fileHandler = fileHandler;
     }
 
     @Override

@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 public class Rule {
@@ -16,5 +18,18 @@ public class Rule {
 
     public String[] getTerminals() {
         return terminals;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rule rule = (Rule) o;
+        return Objects.deepEquals(nonterminals, rule.nonterminals) && Objects.deepEquals(terminals, rule.terminals);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(nonterminals), Arrays.hashCode(terminals));
     }
 }

@@ -24,6 +24,18 @@ public class Application {
         commands.put("saveas", new SaveAsCommand(fileHandler,grammarCommands));
         commands.put("help", new HelpCommand(fileHandler));
         commands.put("exit", new ExitCommand(fileHandler));
+        commands.put("list", new ListCommand(grammarCommands));
+        commands.put("print", new PrintCommand(grammarCommands));
+        commands.put("saveid",new SaveIDCommand(grammarCommands,fileHandler));
+        commands.put("addRule",new AddRuleCommand(grammarCommands,fileHandler));
+        commands.put("removeRule", new RemoveRuleCommand(grammarCommands,fileHandler));
+        commands.put("union", new UnionCommand(grammarCommands,fileHandler));
+        commands.put("concat", new ConcatCommand(grammarCommands,fileHandler));
+        commands.put("chomsky", new ChomskyCommand(grammarCommands));
+        commands.put("cyk", new CykCommand(grammarCommands));
+        commands.put("iter", new IterCommand(grammarCommands,fileHandler));
+        commands.put("empty", new EmptyCommand(grammarCommands));
+        commands.put("chomskify", new ChomskifyCommand(grammarCommands,fileHandler));
         Scanner scanner = new Scanner(System.in);
         while(scanner.hasNextLine()){
             String line = scanner.nextLine();

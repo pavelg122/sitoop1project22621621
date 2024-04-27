@@ -57,16 +57,16 @@ public class UnionCommand implements Command{
             retrieved2 = iterator2.next();
 
         }
-        String[] rule1Terminals;
+        String[] rule1Nonterminals;
         assert retrieved1 != null;
-        rule1Terminals = retrieved1.getTerminals();
+        rule1Nonterminals = retrieved1.getNonterminals();
         assert retrieved2 != null;
-        String[] rule2Terminals = retrieved2.getTerminals();
-        int r1len = rule1Terminals.length;
-        int r2len = rule2Terminals.length;
+        String[] rule2Nonterminals = retrieved2.getNonterminals();
+        int r1len = rule1Nonterminals.length;
+        int r2len = rule2Nonterminals.length;
         String[] unionTerminals = new String[r1len + r2len];
-        System.arraycopy(rule1Terminals, 0, unionTerminals, 0, r1len);
-        System.arraycopy(rule2Terminals, 0, unionTerminals, r1len, r2len);
+        System.arraycopy(rule1Nonterminals, 0, unionTerminals, 0, r1len);
+        System.arraycopy(rule2Nonterminals, 0, unionTerminals, r1len, r2len);
         String[] unionNonterminals = {"S"};
         unionRules.add(new Rule(unionNonterminals, unionTerminals));
         unionRules.addAll(grammar1Rules);

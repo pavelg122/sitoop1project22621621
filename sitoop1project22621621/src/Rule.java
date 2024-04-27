@@ -32,4 +32,12 @@ public class Rule {
     public int hashCode() {
         return Objects.hash(Arrays.hashCode(nonterminals), Arrays.hashCode(terminals));
     }
+
+    public void setNonterminals(String[] nonterminals) {
+        this.nonterminals = nonterminals;
+    }
+
+    public void setTerminals(String[] terminals) {
+        this.terminals = terminals;
+    }
 }

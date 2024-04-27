@@ -31,7 +31,7 @@ public class Application {
         commands.put("removeRule", new RemoveRuleCommand(grammarCommands,fileHandler));
         commands.put("union", new UnionCommand(grammarCommands,fileHandler));
         commands.put("concat", new ConcatCommand(grammarCommands,fileHandler));
-        commands.put("chomsky", new ChomskyCommand(grammarCommands));
+        commands.put("chomsky", new ChomskyCommand(grammarCommands,fileHandler));
         commands.put("cyk", new CykCommand(grammarCommands));
         commands.put("iter", new IterCommand(grammarCommands,fileHandler));
         commands.put("empty", new EmptyCommand(grammarCommands));

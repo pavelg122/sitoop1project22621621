@@ -58,16 +58,16 @@ public class ConcatCommand implements Command{
 
     private static String[] getTerminals(Rule retrieved1, Rule retrieved2) {
         assert retrieved1 != null;
-        String[] rule1Terminals = retrieved1.getTerminals();
+        String[] rule1Nonterminals = retrieved1.getNonterminals();
         assert retrieved2 != null;
-        String[] rule2Terminals = retrieved2.getTerminals();
+        String[] rule2Nonterminals = retrieved2.getNonterminals();
 
         StringBuilder concatString = new StringBuilder();
-        for (String rule1Terminal : rule1Terminals) {
-            concatString.append(rule1Terminal);
+        for (String rule1Nonterminal : rule1Nonterminals) {
+            concatString.append(rule1Nonterminal);
         }
-        for (String rule2Terminal : rule2Terminals) {
-            concatString.append(rule2Terminal);
+        for (String rule2Nonterminal : rule2Nonterminals) {
+            concatString.append(rule2Nonterminal);
         }
         return new String[]{concatString.toString()};
     }

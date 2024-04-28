@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Set;
 
 public class RemoveRuleCommand implements Command{
@@ -16,8 +17,8 @@ public class RemoveRuleCommand implements Command{
         StringBuilder ruleString = new StringBuilder();
         Set<Rule> rules = grammar.getRules();
         int counter = 1;
-        String[] nonterminals = null;
-        String[] terminals = null;
+        String nonterminals = null;
+        ArrayList<String> terminals = null;
         for (Rule rule : rules) {
             if (counter == number) {
                 nonterminals = rule.getNonterminals();
@@ -26,9 +27,8 @@ public class RemoveRuleCommand implements Command{
             counter++;
         }
         assert nonterminals != null;
-        for (String nonterminal : nonterminals) {
-            ruleString.append(nonterminal);
-        }
+            ruleString.append(nonterminals);
+
         ruleString.append(" → ");
         assert terminals != null;
         for (String terminal : terminals) {

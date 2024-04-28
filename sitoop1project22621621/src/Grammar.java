@@ -45,11 +45,11 @@ public class Grammar{
         for(Rule rule:rules){
             counter++;
             stringBuilder.append("( " + counter + " ) ");
-            for(String nonterminal: rule.getNonterminals()){
+            String nonterminal =  rule.getNonterminals();
                 stringBuilder.append(nonterminal);
-            }
+
             stringBuilder.append(" → ");
-            String[] terminals = rule.getTerminals();
+            ArrayList<String> terminals = rule.getTerminals();
             for(String terminal:terminals){
                 stringBuilder.append(terminal).append(" | ");
             }
@@ -64,11 +64,11 @@ public class Grammar{
         PrintWriter printWriter = new PrintWriter(fileName);
         StringBuilder stringBuilder=  new StringBuilder();
         for(Rule rule: rules){
-            for(String nonterminal: rule.getNonterminals()){
+            String nonterminal =  rule.getNonterminals();
                 stringBuilder.append(nonterminal);
-            }
+
             stringBuilder.append(" → ");
-            String[] terminals = rule.getTerminals();
+            ArrayList<String> terminals = rule.getTerminals();
             for(String terminal:terminals){
                 stringBuilder.append(terminal).append(" | ");
             }
@@ -80,18 +80,11 @@ public class Grammar{
 
     public void addRule(String rule) {
         String[] ruleParts = rule.split("→",2);
-        String[] nonterminals = new String[100];
-        for (int i = 0; i < ruleParts[0].length(); i++) {
-            nonterminals[i] = String.valueOf(ruleParts[0].charAt(i));
-        }
+            String nonterminals = String.valueOf(ruleParts[0]);
         String[] terminals = ruleParts[1].split("|");
-      rules.add(new Rule(nonterminals,terminals));
-        for(String nonterminal:nonterminals){
-            System.out.println(nonterminal);
-        }
-      for(String terminal:terminals){
-          System.out.println(terminal);
-      }
+        ArrayList<String> terminals1 = new ArrayList<>(Arrays.asList(terminals));
+      rules.add(new Rule(nonterminals,terminals1));
+
     }
 
 

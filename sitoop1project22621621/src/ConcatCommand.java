@@ -1,6 +1,4 @@
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class ConcatCommand implements Command{
     private GrammarCommands grammarCommands;
@@ -36,18 +34,19 @@ public class ConcatCommand implements Command{
         assert retrieved1 != null;
         assert retrieved2 != null;
         String[] concatTerminals = getTerminals(retrieved1, retrieved2);
-        String[] concatNonterminals = {"S"};
-        concatRules.add(new Rule(concatNonterminals, concatTerminals));
+        ArrayList<String> concatTerminals1 = new ArrayList<>(Arrays.asList(concatTerminals));
+        String concatNonterminals = "S";
+        concatRules.add(new Rule(concatNonterminals, concatTerminals1));
         concatRules.addAll(grammar1Rules);
         concatRules.addAll(grammar2Rules);
         concat.setRules(concatRules);
         
         for(Rule rule:concatRules){
-            for(String nonterminal: rule.getNonterminals()){
+            String nonterminal =  rule.getNonterminals();
                 stringBuilder.append(nonterminal);
-            }
+
             stringBuilder.append(" → ");
-            String[] terminals = rule.getTerminals();
+            ArrayList<String> terminals = rule.getTerminals();
             for(String terminal:terminals){
                 stringBuilder.append(terminal).append(" | ");
             }
@@ -58,17 +57,9 @@ public class ConcatCommand implements Command{
 
     private static String[] getTerminals(Rule retrieved1, Rule retrieved2) {
         assert retrieved1 != null;
-        String[] rule1Nonterminals = retrieved1.getNonterminals();
+        String rule1Nonterminals = retrieved1.getNonterminals();
         assert retrieved2 != null;
-        String[] rule2Nonterminals = retrieved2.getNonterminals();
-
-        StringBuilder concatString = new StringBuilder();
-        for (String rule1Nonterminal : rule1Nonterminals) {
-            concatString.append(rule1Nonterminal);
-        }
-        for (String rule2Nonterminal : rule2Nonterminals) {
-            concatString.append(rule2Nonterminal);
-        }
-        return new String[]{concatString.toString()};
+        String rule2Nonterminals = retrieved2.getNonterminals();
+        return new String[]{rule1Nonterminals,rule2Nonterminals};
     }
 }

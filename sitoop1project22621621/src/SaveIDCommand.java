@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class SaveIDCommand implements Command{
     private GrammarCommands grammarCommands;
@@ -13,15 +14,13 @@ public class SaveIDCommand implements Command{
     public void invoke(String[] input) throws Exception {
         Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
         StringBuilder grammarBuilder = new StringBuilder();
-        String[] nonterminals = null;
-        String[] terminals = null;
+        String nonterminals = null;
+        ArrayList<String> terminals = null;
         for(Rule rule: grammar.getRules()){
             nonterminals = rule.getNonterminals();
             terminals = rule.getTerminals();
             assert nonterminals != null;
-            for (String nonterminal : nonterminals) {
-                grammarBuilder.append(nonterminal);
-            }
+                grammarBuilder.append(nonterminals);
             grammarBuilder.append(" → ");
             assert terminals != null;
             for (String terminal : terminals) {

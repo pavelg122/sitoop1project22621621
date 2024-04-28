@@ -4,19 +4,19 @@ import java.util.Objects;
 
 
 public class Rule {
-    private String[] nonterminals;
-    private String[] terminals;
+    private String nonterminals;
+    private ArrayList<String> terminals;
 
-    public Rule(String[] nonterminals, String[] terminals) {
+    public Rule(String nonterminals, ArrayList<String> terminals) {
         this.nonterminals = nonterminals;
         this.terminals = terminals;
     }
 
-    public String[] getNonterminals() {
+    public String getNonterminals() {
         return nonterminals;
     }
 
-    public String[] getTerminals() {
+    public ArrayList<String> getTerminals() {
         return terminals;
     }
 
@@ -25,19 +25,19 @@ public class Rule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Rule rule = (Rule) o;
-        return Objects.deepEquals(nonterminals, rule.nonterminals) && Objects.deepEquals(terminals, rule.terminals);
+        return Objects.equals(nonterminals, rule.nonterminals) && Objects.equals(terminals, rule.terminals);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.hashCode(nonterminals), Arrays.hashCode(terminals));
+        return Objects.hash(nonterminals, terminals);
     }
 
-    public void setNonterminals(String[] nonterminals) {
+    public void setNonterminals(String nonterminals) {
         this.nonterminals = nonterminals;
     }
 
-    public void setTerminals(String[] terminals) {
+    public void setTerminals(ArrayList<String> terminals) {
         this.terminals = terminals;
     }
 }

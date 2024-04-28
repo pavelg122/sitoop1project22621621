@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class ChomskifyCommand implements Command{
     private GrammarCommands grammarCommands;
@@ -23,15 +20,17 @@ public class ChomskifyCommand implements Command{
         if (iterator1.hasNext()) {
             retrieved1 = iterator1.next();
         }
-        String[] startNonterminals = {"S0"};
+        String startNonterminals = "S0";
         assert retrieved1 != null;
-        String[] startTerminals = retrieved1.getNonterminals();
-        cnfRules.add(new Rule(startNonterminals,startTerminals));
+        String startTerminals = retrieved1.getNonterminals();
+        String[] startTerminals1 = startTerminals.split("");
+        ArrayList<String> startTerminals2 = new ArrayList<>(Arrays.asList(startTerminals1));
+        cnfRules.add(new Rule(startNonterminals,startTerminals2));
         //премахване на безполезни правила - правила с терминали, които ги няма в началното правило
-        String[] usefulNonterminals = retrieved1.getTerminals();
+        ArrayList<String> usefulNonterminals = retrieved1.getTerminals();
         while(iterator1.hasNext()){
             Rule retrieved = iterator1.next();
-            String[] nonterminals = retrieved.getNonterminals();
+            String nonterminals = retrieved.getNonterminals();
         if(!stringContains(usefulNonterminals,nonterminals)){
             //rules.remove(retrieved);
             iterator1.remove();
@@ -40,12 +39,12 @@ public class ChomskifyCommand implements Command{
         //премахване на правила с празен символ  (A → ε)
         Iterator<Rule>iterator2 = rules.iterator();
         Set<Rule> removedEmptyRules = new HashSet<>();
-        String[] nullString = {""};
-        String[] epsilon = {"ε"};
+        String nullString = "";
+        String epsilon = "ε";
         while(iterator2.hasNext()){
             Rule retrieved = iterator2.next();
             //String[] ruleNonterminals = retrieved.getNonterminals();
-            String[] ruleTerminals = retrieved.getTerminals();
+            ArrayList<String> ruleTerminals = retrieved.getTerminals();
             if(stringContains(ruleTerminals,nullString) || stringContains(ruleTerminals,epsilon)){
                 removedEmptyRules.add(retrieved);
                 iterator2.remove();
@@ -55,20 +54,22 @@ public class ChomskifyCommand implements Command{
             iterator2 = rules.iterator();
             while(iterator2.hasNext()){
                 Rule retrieved = iterator2.next();
-                String[] ruleNonterminals = retrieved.getNonterminals();
-                if(Arrays.equals(removed.getTerminals(), ruleNonterminals)){
+                String ruleNonterminals = retrieved.getNonterminals();
+                //if(Arrays.equals(removed.getTerminals(), ruleNonterminals))
+                    /*if(removed.getNonterminals().e){
                     cnfRules.add(new Rule(removed.getNonterminals(), retrieved.getTerminals()));
-                }
+                }*/
             }
         }
         //премахване на юнит правила (A → B)
         Iterator<Rule>iterator3 = rules.iterator();
         Set<Rule> removedUnitRules = new HashSet<>();
         String[] allTerminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        ArrayList<String> allTerminals1 = new ArrayList<>(Arrays.asList(allTerminals));
         while(iterator3.hasNext()){
             Rule retrieved = iterator3.next();
-            String[] ruleTerminals = retrieved.getTerminals();
-            if(stringContains(allTerminals,ruleTerminals) && ruleTerminals.length == 1 ){
+            ArrayList<String> ruleTerminals = retrieved.getTerminals();
+            if(stringContains(allTerminals1, String.valueOf(ruleTerminals)) && ruleTerminals.size() == 1 ){
                 removedUnitRules.add(retrieved);
                 iterator3.remove();
             }
@@ -77,8 +78,8 @@ public class ChomskifyCommand implements Command{
             iterator3 = rules.iterator();
             while(iterator3.hasNext()){
                 Rule retrieved = iterator3.next();
-                String[] ruleNonterminals = retrieved.getNonterminals();
-                if(Arrays.equals(removed.getTerminals(), ruleNonterminals)){
+                String ruleNonterminals = retrieved.getNonterminals();
+                if(removed.getTerminals().toString().equals(ruleNonterminals)){
                     cnfRules.add(new Rule(removed.getNonterminals(), retrieved.getTerminals()));
                 }
             }
@@ -97,14 +98,14 @@ public class ChomskifyCommand implements Command{
         }
         System.out.println("Chomskify grammar id: " + cnfGrammar.getId());
     }
-    private boolean stringContains(String[] arr,String[] value){
+    private boolean stringContains(ArrayList<String> arr,String value){
         boolean useful = false;
         for (String nonTerminal : arr) {
-            StringBuilder nonTerminalString = new StringBuilder();
+            /*StringBuilder nonTerminalString = new StringBuilder();
             for (String Nonterminal : value) {
                 nonTerminalString.append(Nonterminal);
-            }
-            if (nonTerminal.contentEquals(nonTerminalString)) {
+            }*/
+            if (arr.contains(value)) {
                 useful = true;
                 break;
             }

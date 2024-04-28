@@ -57,17 +57,19 @@ public class UnionCommand implements Command{
             retrieved2 = iterator2.next();
 
         }
-        String[] rule1Nonterminals;
+        String rule1Nonterminals;
         assert retrieved1 != null;
         rule1Nonterminals = retrieved1.getNonterminals();
         assert retrieved2 != null;
-        String[] rule2Nonterminals = retrieved2.getNonterminals();
-        int r1len = rule1Nonterminals.length;
-        int r2len = rule2Nonterminals.length;
-        String[] unionTerminals = new String[r1len + r2len];
-        System.arraycopy(rule1Nonterminals, 0, unionTerminals, 0, r1len);
-        System.arraycopy(rule2Nonterminals, 0, unionTerminals, r1len, r2len);
-        String[] unionNonterminals = {"S"};
+        String rule2Nonterminals = retrieved2.getNonterminals();
+        /*int r1len = rule1Nonterminals.length;
+        int r2len = rule2Nonterminals.length;*/
+        ArrayList<String> unionTerminals = new ArrayList<>();
+        unionTerminals.add(rule1Nonterminals);
+        unionTerminals.add(rule2Nonterminals);
+        /*System.arraycopy(rule1Nonterminals, 0, unionTerminals, 0, r1len);
+        System.arraycopy(rule2Nonterminals, 0, unionTerminals, r1len, r2len);*/
+        String unionNonterminals = "S";
         unionRules.add(new Rule(unionNonterminals, unionTerminals));
         unionRules.addAll(grammar1Rules);
         unionRules.addAll(grammar2Rules);
@@ -75,11 +77,10 @@ public class UnionCommand implements Command{
         System.out.println("union grammar id: " + union.getId());
         StringBuilder stringBuilder = new StringBuilder();
         for (Rule rule : unionRules) {
-            for (String nonterminal : rule.getNonterminals()) {
+            String nonterminal  = rule.getNonterminals();
                 stringBuilder.append(nonterminal);
-            }
             stringBuilder.append(" → ");
-            String[] terminals = rule.getTerminals();
+            ArrayList<String> terminals = rule.getTerminals();
             for (String terminal : terminals) {
                 stringBuilder.append(terminal).append(" | ");
             }

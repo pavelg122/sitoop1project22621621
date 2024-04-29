@@ -22,10 +22,11 @@ public class ChomskifyCommand implements Command{
         }
         String startNonterminals = "S0";
         assert retrieved1 != null;
-        String startTerminals = retrieved1.getNonterminals();
-        String[] startTerminals1 = startTerminals.split("");
-        ArrayList<String> startTerminals2 = new ArrayList<>(Arrays.asList(startTerminals1));
-        cnfRules.add(new Rule(startNonterminals,startTerminals2));
+        ArrayList<String> startTerminals = retrieved1.getTerminals();
+        String startNonterminal = retrieved1.getNonterminals();
+        /*String[] startTerminals1 = startTerminals.split("");
+        ArrayList<String> startTerminals2 = new ArrayList<>(Arrays.asList(startTerminals1));*/
+        cnfRules.add(new Rule(startNonterminals,startTerminals));
         //премахване на безполезни правила - правила с терминали, които ги няма в началното правило
         ArrayList<String> usefulNonterminals = retrieved1.getTerminals();
         while(iterator1.hasNext()){
@@ -41,11 +42,15 @@ public class ChomskifyCommand implements Command{
         Set<Rule> removedEmptyRules = new HashSet<>();
         String nullString = "";
         String epsilon = "ε";
+        String question = "?";
         while(iterator2.hasNext()){
             Rule retrieved = iterator2.next();
             //String[] ruleNonterminals = retrieved.getNonterminals();
             ArrayList<String> ruleTerminals = retrieved.getTerminals();
-            if(stringContains(ruleTerminals,nullString) || stringContains(ruleTerminals,epsilon)){
+            String ruleNonterminals = retrieved.getNonterminals();
+            if((stringContains(ruleTerminals,nullString) || stringContains(ruleTerminals,epsilon) || stringContains(ruleTerminals,question))
+                    && !(ruleNonterminals.equals(startNonterminal)))
+            {
                 removedEmptyRules.add(retrieved);
                 iterator2.remove();
             }
@@ -55,10 +60,16 @@ public class ChomskifyCommand implements Command{
             while(iterator2.hasNext()){
                 Rule retrieved = iterator2.next();
                 String ruleNonterminals = retrieved.getNonterminals();
-                //if(Arrays.equals(removed.getTerminals(), ruleNonterminals))
-                    /*if(removed.getNonterminals().e){
-                    cnfRules.add(new Rule(removed.getNonterminals(), retrieved.getTerminals()));
-                }*/
+                ArrayList<String> ruleTerminals1 = retrieved.getTerminals();
+                ArrayList<String> removeSymbols = new ArrayList<>();
+                removeSymbols.add(nullString);
+                removeSymbols.add(epsilon);
+                removeSymbols.add(question);
+                if(ruleTerminals1.contains(removed.getNonterminals())){
+                    ArrayList<String> newCombinations = getNewCombinations(ruleTerminals1,removed.getNonterminals());
+                        ruleTerminals1.addAll(newCombinations);
+                    ruleTerminals1.removeAll(removeSymbols);
+                }
             }
         }
         //премахване на юнит правила (A → B)
@@ -112,4 +123,50 @@ public class ChomskifyCommand implements Command{
         }
      return useful;
     }
+    private String getNextTerminal(Set<Rule> rules,String[] allTerminals){
+        String nextTerminal = null;
+        Map<String, Boolean> freeTerminals = new HashMap<>();
+
+        return nextTerminal;
+    }
+    private ArrayList<String> getNewCombinations(ArrayList<String> ruleTerminals1, String nonterminals){
+        Set<String> newCombinations1 = new HashSet<>();
+        Map<String,Integer> originalTerminalsToChange = new HashMap<>();
+        int terminalsToChange = 0;
+        for(String terminal:ruleTerminals1){
+            if(terminal.contains(nonterminals)){
+               terminalsToChange++;
+               int frequency = countFreq(nonterminals,terminal);
+               if(frequency)
+               originalTerminalsToChange.put(terminal,frequency);
+            }
+        }
+
+        return newCombinations1;
+    }
+private static int countFreq(String pat, String txt)
+{
+    int M = pat.length();
+    int N = txt.length();
+    int res = 0;
+
+    /* A loop to slide pat[] one by one */
+    for (int i = 0; i <= N - M; i++) {
+            /* For current index i, check for
+        pattern match */
+        int j;
+        for (j = 0; j < M; j++) {
+            if (txt.charAt(i + j) != pat.charAt(j)) {
+                break;
+            }
+        }
+
+        // if pat[0...M-1] = txt[i, i+1, ...i+M-1]
+        if (j == M) {
+            res++;
+            j = 0;
+        }
+    }
+    return res;
+}
 }

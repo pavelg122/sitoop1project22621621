@@ -14,6 +14,8 @@ public class ChomskifyCommand implements Command{
      Grammar cnfGrammar = new Grammar();
      Set<Rule> rules = grammar.getRules();
      Set<Rule> cnfRules = new HashSet<>();
+        String[] allNonterminals = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","s","t","u","v","w","x","y","z"};
+     String[] allTerminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
      //добавяне на ново правило в началото
         Iterator<Rule> iterator1 = rules.iterator();
         Rule retrieved1 = null;
@@ -75,7 +77,7 @@ public class ChomskifyCommand implements Command{
         //премахване на юнит правила (A → B)
         Iterator<Rule>iterator3 = rules.iterator();
         Set<Rule> removedUnitRules = new HashSet<>();
-        String[] allTerminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+
         ArrayList<String> allTerminals1 = new ArrayList<>(Arrays.asList(allTerminals));
         while(iterator3.hasNext()){
             Rule retrieved = iterator3.next();
@@ -96,19 +98,61 @@ public class ChomskifyCommand implements Command{
             }
         }
         //премахване на правила с несамотни терминали (A → aB)
-        Iterator<Rule>iterator4 = rules.iterator();
 
-        while(iterator4.hasNext()){
-            Rule retrieved = iterator4.next();
+        for (Rule retrieved : rules) {
+            ArrayList<String> ruleTerminals = retrieved.getTerminals();
+            for (String terminal : ruleTerminals) {
+                if ((charsCount(terminal, allTerminals) == 1 && charsCount(terminal, allNonterminals) == 1)
+                        && terminal.length() == 2) {
+                    String nextNonterminal = getNextNonterminal(rules, allNonterminals);
+                    ArrayList<String> newRuleTerminal = getNewRuleTerminal(terminal, allNonterminals, nextNonterminal);
+                    rules.add(new Rule(nextNonterminal, newRuleTerminal));
+                    //iterator4.remove();
+                }
+            }
         }
         //премахване на правила с 2+ нетерминали отдясно (A → BCD)
-        Iterator<Rule>iterator5 = rules.iterator();
 
-        while(iterator5.hasNext()){
-            Rule retrieved = iterator5.next();
+        for (Rule retrieved : rules) {
+            ArrayList<String> ruleTerminals = retrieved.getTerminals();
+            for (String terminal : ruleTerminals) {
+                if (charsCount(terminal, allTerminals) == terminal.length() && terminal.length() == 3) {
+                    String nextNonterminal1 = getNextNonterminal(rules, allNonterminals);
+                    char[] oldTerminalArr = terminal.toCharArray();
+                    StringBuilder newTerminal = new StringBuilder();
+                    for (int i = 0; i < terminal.length() - 1; i++) {
+                        newTerminal.append(oldTerminalArr[i]);
+                    }
+                    ArrayList<String> newRuleTerminal1 = new ArrayList<>();
+                    for (int i = 0; i < newTerminal.length(); i++) {
+                        newRuleTerminal1.add(String.valueOf(newTerminal.charAt(i)));
+                    }
+                    rules.add(new Rule(nextNonterminal1, newRuleTerminal1));
+                    ArrayList<String> oldRuleNewTerminals = new ArrayList<>();
+                    String oldRuleNewTerminalBuilder = nextNonterminal1 +
+                            oldTerminalArr[2];
+                    oldRuleNewTerminals.add(oldRuleNewTerminalBuilder);
+                    retrieved.setTerminals(oldRuleNewTerminals);
+                }
+            }
         }
         System.out.println("Chomskify grammar id: " + cnfGrammar.getId());
     }
+
+    private static ArrayList<String> getNewRuleTerminal(String terminal, String[] allNonterminals, String nextNonterminal) {
+        char[] terminalCharArr = terminal.toCharArray();
+        char nonterminal;
+        ArrayList<String> nonTerminalsArrList = new ArrayList<>(Arrays.asList(allNonterminals));
+        if(nonTerminalsArrList.contains(String.valueOf(terminalCharArr[0]))){
+             nonterminal = terminalCharArr[0];
+        }
+        else{ nonterminal = terminalCharArr[1];}
+        String newTerminal = terminal.replace(terminal, nextNonterminal);
+        ArrayList<String> newRuleTerminal = new ArrayList<>();
+        newRuleTerminal.add(newTerminal);
+        return newRuleTerminal;
+    }
+
     private boolean stringContains(ArrayList<String> arr,String value){
         boolean useful = false;
         for (String nonTerminal : arr) {
@@ -123,26 +167,53 @@ public class ChomskifyCommand implements Command{
         }
      return useful;
     }
-    private String getNextTerminal(Set<Rule> rules,String[] allTerminals){
-        String nextTerminal = null;
+    private String getNextNonterminal(Set<Rule> rules,String[] allNonterminals){
+        String nextNonterminal = null;
         Map<String, Boolean> freeTerminals = new HashMap<>();
-
-        return nextTerminal;
+        for(String letter:allNonterminals){
+            freeTerminals.put(letter,false);
+        }
+        for(Rule rule:rules){
+            freeTerminals.put(rule.getNonterminals(),true);
+        }
+        for(Map.Entry<String,Boolean> entry:freeTerminals.entrySet()){
+            if(entry.getValue().equals(false)){
+                nextNonterminal = entry.getKey();
+                break;
+            }
+        }
+        return nextNonterminal;
     }
     private ArrayList<String> getNewCombinations(ArrayList<String> ruleTerminals1, String nonterminals){
         Set<String> newCombinations1 = new HashSet<>();
-        Map<String,Integer> originalTerminalsToChange = new HashMap<>();
-        int terminalsToChange = 0;
+        //Map<String,Integer> originalTerminalsToChange = new HashMap<>();
+        //ArrayList<String> indexesToRemove = new ArrayList<>();
         for(String terminal:ruleTerminals1){
             if(terminal.contains(nonterminals)){
-               terminalsToChange++;
                int frequency = countFreq(nonterminals,terminal);
-               if(frequency)
-               originalTerminalsToChange.put(terminal,frequency);
+                int[] combinations = new int[frequency];
+               for(int i=0;i<frequency;i++){
+               combinations[i]= i+1;
+               }
+               LinkedHashSet powerSet = powerset(combinations);
+               for(int i=0;i< powerSet.size();i++){
+                   char[] terminalCharArr = terminal.toCharArray();
+                   StringBuilder sb = new StringBuilder();
+                   sb.append(terminalCharArr);
+                   for(int j=frequency;j>0;j--){
+                   if(powerSet.contains(j)){
+                       /*StringBuilder sb = new StringBuilder();
+                       sb.append(terminalCharArr);*/
+                       int indexToDelete = nthIndexOf2(terminal,nonterminals,j);
+                       sb.deleteCharAt(indexToDelete);
+                   }
+                   }
+                   newCombinations1.add(sb.toString());
+               }
+               //originalTerminalsToChange.put(terminal,frequency);
             }
         }
-
-        return newCombinations1;
+        return new ArrayList<>(newCombinations1);
     }
 private static int countFreq(String pat, String txt)
 {
@@ -169,4 +240,81 @@ private static int countFreq(String pat, String txt)
     }
     return res;
 }
+    private static LinkedHashSet powerset(int[] set) {
+
+        //create the empty power set
+        LinkedHashSet power = new LinkedHashSet();
+
+        //get the number of elements in the set
+        int elements = set.length;
+
+        //the number of members of a power set is 2^n
+        int powerElements = (int) Math.pow(2,elements);
+
+        //run a binary counter for the number of power elements
+        for (int i = 0; i < powerElements; i++) {
+
+            //convert the binary number to a string containing n digits
+            String binary = intToBinary(i, elements);
+
+            //create a new set
+            LinkedHashSet innerSet = new LinkedHashSet();
+
+            //convert each digit in the current binary number to the corresponding element
+            //in the given set
+            for (int j = 0; j < binary.length(); j++) {
+                if (binary.charAt(j) == '1')
+                    innerSet.add(set[j]);
+            }
+
+            //add the new set to the power set
+            power.add(innerSet);
+
+        }
+
+        return power;
+    }
+
+    /**
+     * Converts the given integer to a String representing a binary number
+     * with the specified number of digits
+     * For example when using 4 digits the binary 1 is 0001
+     * @param binary int
+     * @param digits int
+     * @return String
+     */
+    private static String intToBinary(int binary, int digits) {
+
+        String temp = Integer.toBinaryString(binary);
+        int foundDigits = temp.length();
+        String returner = temp;
+        for (int i = foundDigits; i < digits; i++) {
+            returner = "0" + returner;
+        }
+
+        return returner;
+    }
+
+    static int nthIndexOf2(String input, String substring, int nth) {
+        int index = -1;
+        while (nth > 0) {
+            index = input.indexOf(substring, index + substring.length());
+            if (index == -1) {
+                return -1;
+            }
+            nth--;
+        }
+        return index;
+    }
+
+    private int charsCount(String terminal,String[] characters){
+        int count=0;
+        char[] terminalCharArr = terminal.toCharArray();
+        ArrayList<String> charsArrList = new ArrayList<>(Arrays.asList(characters));
+        for(char ch:terminalCharArr){
+            if(charsArrList.contains(String.valueOf(ch)))
+            {count++;}
+        }
+        return count;
+    }
 }

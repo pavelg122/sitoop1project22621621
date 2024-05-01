@@ -4,7 +4,7 @@ import java.util.*;
 public class Application {
     public static void main(String[] args) throws Exception {
         Set<Grammar> grammars = new HashSet<>();
-        FileHandler fileHandler= new FileHandlerImpl();
+        FileHandler fileHandler= new FileHandlerImpl(grammars);
         GrammarCommands grammarCommands = new GrammarCommandsImpl(grammars);
         /*fileHandler.open("C:\\Users\\pavel\\Desktop\\testgrammar.txt");
         fileHandler.printFileContent();

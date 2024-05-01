@@ -2,11 +2,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.Set;
 
 public class FileHandlerImpl implements FileHandler{
     private File currentFile;
     private StringBuilder fileContent = new StringBuilder();
    private boolean isFileOpen = false;
+    private Set<Grammar> grammarSet;
+
+    public FileHandlerImpl(Set<Grammar> grammarSet) {
+        this.grammarSet = grammarSet;
+    }
+
     @Override
     public boolean isFileOpen() {
         return isFileOpen;

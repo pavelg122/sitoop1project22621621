@@ -45,10 +45,10 @@ public class Application {
             if(parts.length>1)input = parts[1].split(" ");
             Command cmd = commands.get(commandName);
             if(cmd != null)cmd.invoke(input);
-                else System.out.println("Unknown command " + commandName);
+                /*else System.out.println("Unknown command " + commandName);
             for (int i = 0; i < input.length; i++) {
                 System.out.println("i: " + i + input[i]);
-            }
+            }*/
 
         }
     }

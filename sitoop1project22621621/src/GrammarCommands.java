@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.util.Set;
 
 public interface GrammarCommands {
     void list();
@@ -14,4 +15,5 @@ public interface GrammarCommands {
     //void empty(long id);
     //void chomskify(long id);
     Grammar getGrammar(long id);
+    public Set<Grammar> getGrammarSet();
 }

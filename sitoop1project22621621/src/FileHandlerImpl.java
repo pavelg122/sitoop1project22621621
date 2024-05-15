@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -20,21 +21,23 @@ public class FileHandlerImpl implements FileHandler{
     }
 
     @Override
-    public void open(String filePath) throws IOException {
+    public void open(String filePath,Set<Grammar> grammars) throws IOException {
         currentFile = new File(filePath);
-        if(!currentFile.exists()){
-            currentFile.createNewFile();
-        }
+        currentFile.createNewFile();
+
         try {
             Grammar grammar = new Grammar();
             Scanner scanner = new Scanner(currentFile);
             while (scanner.hasNextLine()) {
-                grammar.addRule(scanner.nextLine());
-                fileContent.append(scanner.nextLine()).append("\n");
+                String line = scanner.nextLine();
+                grammar.addRule(line);
+                fileContent.append(line).append("\n");
             }
             isFileOpen = true;
             scanner.close();
             System.out.println("Successfully opened file " + currentFile.getName());
+            grammars.add(grammar);
+            //System.out.println(fileContent);
         }catch (IOException e){System.out.println("Error opening file "+ currentFile.getName());
             isFileOpen = false;
         System.exit(1);}
@@ -43,16 +46,19 @@ public class FileHandlerImpl implements FileHandler{
     @Override
     public void close() {
         isFileOpen = false;
-        fileContent = null;
+        fileContent = new StringBuilder();
         System.out.println("Successfully closed " + currentFile.getName());
         currentFile = null;
+        System.out.println(fileContent);
+        grammarSet.clear();
     }
 
     @Override
     public void saveInFile() {
 try{
-    PrintWriter writer = new PrintWriter(currentFile);
+    PrintWriter writer = new PrintWriter(new FileWriter(currentFile,false));
     writer.write(fileContent.toString());
+    System.out.println("Successfully saved " + currentFile.getName());
 }catch(IOException e){System.out.println("Error saving file " + e.getMessage());}
 
     }
@@ -87,10 +93,6 @@ try{
     public void exit() {
         System.out.println("Exiting the program...");
         System.exit(0);
-    }
-
-    public void printFileContent(){
-        System.out.print(fileContent.toString());
     }
 
     public File getCurrentFile() {

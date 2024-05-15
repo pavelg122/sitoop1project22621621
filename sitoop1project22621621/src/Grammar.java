@@ -81,22 +81,30 @@ public class Grammar{
     public void addRule(String rule) {
         String[] ruleParts = rule.split("→",2);
             String nonterminals = String.valueOf(ruleParts[0]);
-        String[] terminals = ruleParts[1].split("|");
+        String[] terminals = ruleParts[1].split(" \\| ");
         ArrayList<String> terminals1 = new ArrayList<>(Arrays.asList(terminals));
+        //for(String terminal:terminals1){System.out.println(terminal);}
       rules.add(new Rule(nonterminals,terminals1));
 
     }
 
 
     public void removeRule(int number) throws Exception {
-        if(number<rules.size()){
-            int counter=1;
-        for(Rule rule:rules){
+        if(number<=rules.size()){
+            int counter=0;
+        /*for(Rule rule:rules){
             if(number==counter){
                 rules.remove(rule);
             }
             counter++;
-        }
+        }*/
+            Iterator<Rule> it = rules.iterator();
+            while(it.hasNext()){
+                Rule rule = it.next();
+                counter++;
+                if(counter==number){rules.remove(rule);
+                break;}
+            }
         }else throw new Exception("Index of rule doesn't exist");
     }
     public static long generateUniqueID(){

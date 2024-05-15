@@ -1,10 +1,11 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 public interface FileHandler {
     boolean isFileOpen();
 
-    void open(String filePath) throws IOException;
+    void open(String filePath, Set<Grammar> grammars) throws IOException;
 
     void close();
 

@@ -12,6 +12,7 @@ public class OpenCommand implements Command{
 
     @Override
     public void invoke(String[] input) throws IOException {
-    fileHandler.open(input[0]);
+       // System.out.println(input[0]);
+    fileHandler.open(input[0],grammarCommands.getGrammarSet());
     }
 }

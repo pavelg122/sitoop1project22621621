@@ -53,6 +53,7 @@ public class ConcatCommand implements Command{
             stringBuilder.append("\n");
         }
         fileHandler.getFileContent().append(stringBuilder);
+        grammarCommands.getGrammarSet().add(concat);
     }
 
     private static String[] getTerminals(Rule retrieved1, Rule retrieved2) {

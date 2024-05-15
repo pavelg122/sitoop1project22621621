@@ -87,5 +87,6 @@ public class UnionCommand implements Command{
             stringBuilder.append("\n");
         }
         fileHandler.getFileContent().append(stringBuilder);
+        grammarCommands.getGrammarSet().add(union);
     }
 }

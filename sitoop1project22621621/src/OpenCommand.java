@@ -1,5 +1,5 @@
 import java.io.IOException;
-import java.util.Arrays;
+
 
 public class OpenCommand implements Command{
     private FileHandler fileHandler;
@@ -12,7 +12,6 @@ public class OpenCommand implements Command{
 
     @Override
     public void invoke(String[] input) throws IOException {
-       // System.out.println(input[0]);
     fileHandler.open(input[0],grammarCommands.getGrammarSet());
     }
 }

@@ -22,19 +22,20 @@ public class Application {
         commands.put("open",new OpenCommand(fileHandler,grammarCommands));
         commands.put("close",new CloseCommand(fileHandler,grammarCommands));
         commands.put("saveas", new SaveAsCommand(fileHandler,grammarCommands));
+        commands.put("save", new SaveCommand(fileHandler));
         commands.put("help", new HelpCommand(fileHandler));
         commands.put("exit", new ExitCommand(fileHandler));
-        commands.put("list", new ListCommand(grammarCommands));
-        commands.put("print", new PrintCommand(grammarCommands));
+        commands.put("list", new ListCommand(grammarCommands,fileHandler));
+        commands.put("print", new PrintCommand(grammarCommands,fileHandler));
         commands.put("saveid",new SaveIDCommand(grammarCommands,fileHandler));
         commands.put("addRule",new AddRuleCommand(grammarCommands,fileHandler));
         commands.put("removeRule", new RemoveRuleCommand(grammarCommands,fileHandler));
         commands.put("union", new UnionCommand(grammarCommands,fileHandler));
         commands.put("concat", new ConcatCommand(grammarCommands,fileHandler));
         commands.put("chomsky", new ChomskyCommand(grammarCommands,fileHandler));
-        commands.put("cyk", new CykCommand(grammarCommands));
+        commands.put("cyk", new CykCommand(grammarCommands,fileHandler));
         commands.put("iter", new IterCommand(grammarCommands,fileHandler));
-        commands.put("empty", new EmptyCommand(grammarCommands));
+        commands.put("empty", new EmptyCommand(grammarCommands,fileHandler));
         commands.put("chomskify", new ChomskifyCommand(grammarCommands,fileHandler));
         Scanner scanner = new Scanner(System.in);
         while(scanner.hasNextLine()){
@@ -45,8 +46,8 @@ public class Application {
             if(parts.length>1)input = parts[1].split(" ");
             Command cmd = commands.get(commandName);
             if(cmd != null)cmd.invoke(input);
-                /*else System.out.println("Unknown command " + commandName);
-            for (int i = 0; i < input.length; i++) {
+                else System.out.println("Unknown command " + commandName);
+            /*for (int i = 0; i < input.length; i++) {
                 System.out.println("i: " + i + input[i]);
             }*/
 

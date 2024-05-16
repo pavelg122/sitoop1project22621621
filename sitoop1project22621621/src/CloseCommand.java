@@ -9,6 +9,8 @@ public class CloseCommand implements Command{
 
     @Override
     public void invoke(String[] input) {
-fileHandler.close();
+        if(fileHandler.isFileOpen()) {
+            fileHandler.close();
+        }else {System.out.println("Please open a file first.");}
     }
 }

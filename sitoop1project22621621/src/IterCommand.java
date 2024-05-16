@@ -13,45 +13,47 @@ public class IterCommand implements Command{
 
     @Override
     public void invoke(String[] input) {
-     Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
-     Grammar iter = new Grammar();
+        if(fileHandler.isFileOpen()) {
+            Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+            Grammar iter = new Grammar();
      /*if(grammar == null){
          throw new Exception();
      }*/
-        Set<Rule> rules = grammar.getRules();
-        Iterator<Rule> iterator1 = rules.iterator();
-        Rule retrieved1 = null;
-        if (iterator1.hasNext()) {
-            retrieved1 = iterator1.next();
+            Set<Rule> rules = grammar.getRules();
+            Iterator<Rule> iterator1 = rules.iterator();
+            Rule retrieved1 = null;
+            if (iterator1.hasNext()) {
+                retrieved1 = iterator1.next();
 
-        }
-        boolean empty=true;
-        String rule1Nonterminals;
-        assert retrieved1 != null;
-        rule1Nonterminals = retrieved1.getNonterminals();
-        String newNonterminal = getNextNonterminal(rules,allNonterminals);
-        ArrayList<String> iterFirstRuleTerminals = new ArrayList<>();
-        iterFirstRuleTerminals.add(newNonterminal+rule1Nonterminals);
-        iterFirstRuleTerminals.add("ε");
-        Set<Rule> iterRules = new HashSet<>();
-        iterRules.add(new Rule(newNonterminal,iterFirstRuleTerminals));
-        iterRules.addAll(grammar.getRules());
-        iter.setRules(iterRules);
-
-        System.out.println("iter grammar id: " + iter.getId());
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Rule rule : iter.getRules()) {
-            String nonterminal  = rule.getNonterminals();
-            stringBuilder.append(nonterminal);
-            stringBuilder.append(" → ");
-            ArrayList<String> terminals = rule.getTerminals();
-            for (String terminal : terminals) {
-                stringBuilder.append(terminal).append(" | ");
             }
-            stringBuilder.append("\n");
-        }
-        fileHandler.getFileContent().append(stringBuilder);
-        grammarCommands.getGrammarSet().add(iter);
+            boolean empty = true;
+            String rule1Nonterminals;
+            assert retrieved1 != null;
+            rule1Nonterminals = retrieved1.getNonterminals();
+            String newNonterminal = getNextNonterminal(rules, allNonterminals);
+            ArrayList<String> iterFirstRuleTerminals = new ArrayList<>();
+            iterFirstRuleTerminals.add(newNonterminal + rule1Nonterminals);
+            iterFirstRuleTerminals.add("ε");
+            Set<Rule> iterRules = new HashSet<>();
+            iterRules.add(new Rule(newNonterminal, iterFirstRuleTerminals));
+            iterRules.addAll(grammar.getRules());
+            iter.setRules(iterRules);
+
+            System.out.println("iter grammar id: " + iter.getId());
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Rule rule : iter.getRules()) {
+                String nonterminal = rule.getNonterminals();
+                stringBuilder.append(nonterminal);
+                stringBuilder.append(" → ");
+                ArrayList<String> terminals = rule.getTerminals();
+                for (String terminal : terminals) {
+                    stringBuilder.append(terminal).append(" | ");
+                }
+                stringBuilder.append("\n");
+            }
+            fileHandler.getFileContent().append(stringBuilder);
+            grammarCommands.getGrammarSet().add(iter);
+        }else System.out.println("Please open a file first.");
     }
     private String getNextNonterminal(Set<Rule> rules,String[] allNonterminals){
         String nextNonterminal = null;

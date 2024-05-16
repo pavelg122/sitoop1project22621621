@@ -2,16 +2,20 @@ import java.util.*;
 
 public class CykCommand implements Command{
     private GrammarCommands grammarCommands;
+    private FileHandler fileHandler;
 
-    public CykCommand(GrammarCommands grammarCommands) {
+    public CykCommand(GrammarCommands grammarCommands, FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
+        this.fileHandler = fileHandler;
     }
 
     @Override
     public void invoke(String[] input) {
-    Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
-    String word = input[1];
-       CYK(grammar,word);
+        if(fileHandler.isFileOpen()) {
+            Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+            String word = input[1];
+            CYK(grammar, word);
+        }else System.out.println("Please open a file first.");
     }
     private void CYK(Grammar grammar,String word){
         Set<String> uniqueNonterminals = new HashSet<>();

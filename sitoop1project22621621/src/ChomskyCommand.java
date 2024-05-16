@@ -14,11 +14,14 @@ public class ChomskyCommand implements Command{
 
     @Override
     public void invoke(String[] input) {
-      Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
-      if(isCNF(grammar)){System.out.println("Grammar " + grammar.getId() + " is in Chomsky Normal Form");}
-      else{
-          System.out.println("Grammar " + grammar.getId() + " isn't in Chomsky Normal Form");
-      }
+        if(fileHandler.isFileOpen()) {
+            Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+            if (isCNF(grammar)) {
+                System.out.println("Grammar " + grammar.getId() + " is in Chomsky Normal Form");
+            } else {
+                System.out.println("Grammar " + grammar.getId() + " isn't in Chomsky Normal Form");
+            }
+        }else {System.out.println("Please open a file first.");}
     }
     private boolean isCNF(Grammar grammar){
         for(Rule rule: grammar.getRules()){

@@ -30,7 +30,8 @@ public class FileHandlerImpl implements FileHandler{
             Scanner scanner = new Scanner(currentFile);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                grammar.addRule(line);
+                if(line.contains("→")){
+                grammar.addRule(line);}
                 fileContent.append(line).append("\n");
             }
             isFileOpen = true;
@@ -58,6 +59,7 @@ public class FileHandlerImpl implements FileHandler{
 try{
     PrintWriter writer = new PrintWriter(new FileWriter(currentFile,false));
     writer.write(fileContent.toString());
+    writer.close();
     System.out.println("Successfully saved " + currentFile.getName());
 }catch(IOException e){System.out.println("Error saving file " + e.getMessage());}
 
@@ -80,12 +82,25 @@ try{
     public void help() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("The following commands are supported:\n");
-        stringBuilder.append("open <file>       opens <file>\n");
-        stringBuilder.append("close             closes currently opened file\n");
-        stringBuilder.append("save              saves the currently open file\n");
-        stringBuilder.append("saveas <file>     saves the currently open file in <file>\n");
-        stringBuilder.append("help              prints this information\n");
-        stringBuilder.append("exit              exists the program\n");
+        stringBuilder.append("open <file>             opens <file>\n");
+        stringBuilder.append("close                   closes currently opened file\n");
+        stringBuilder.append("save                    saves the currently open file\n");
+        stringBuilder.append("saveas <file>           saves the currently open file in <file>\n");
+        stringBuilder.append("help                    prints this information\n");
+        stringBuilder.append("exit                    exists the program\n");
+
+        stringBuilder.append("list                    list with the IDs of all grammars\n");
+        stringBuilder.append("print <id>              prints grammar\n");
+        stringBuilder.append("save <id> <filename>    saves grammar in file\n");
+        stringBuilder.append("addRule <id> <rule>     adds a rule\n");
+        stringBuilder.append("removeRule <id> <n>     removes a rule by number of rule\n");
+        stringBuilder.append("union <id1> <id2>       finds union of two grammars and prints ID of the new grammar\n");
+        stringBuilder.append("concat <id1> <id2>      finds concatenation of two grammars and prints ID of the new grammar\n");
+        stringBuilder.append("chomsky <id>            checks if grammar is in Chomsky Normal Form\n");
+        stringBuilder.append("cyk <id>                checks if a given word is in the language of the grammar\n");
+        stringBuilder.append("iter <id>               finds result of iteration over grammar and prints ID of the new grammar\n");
+        stringBuilder.append("empty <id>              checks if the language of a context-free grammar is empty\n");
+        stringBuilder.append("chomskify <id>          transforms a grammar in Chomsky Normal Form and prints the ID of the new grammar\n");
         System.out.println(stringBuilder);
     }
 

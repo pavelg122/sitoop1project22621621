@@ -1,12 +1,15 @@
 public class PrintCommand implements Command{
     private GrammarCommands grammarCommands;
-
-    public PrintCommand(GrammarCommands grammarCommands) {
+    private FileHandler fileHandler;
+    public PrintCommand(GrammarCommands grammarCommands, FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
+        this.fileHandler = fileHandler;
     }
 
     @Override
     public void invoke(String[] input) {
-    grammarCommands.print(Long.parseLong(input[0]));
+        if(fileHandler.isFileOpen()) {
+            grammarCommands.print(Long.parseLong(input[0]));
+        }else System.out.println("Please open a file first.");
     }
 }

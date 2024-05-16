@@ -7,6 +7,8 @@ public class SaveAsCommand implements Command{
 
     @Override
     public void invoke(String[] input) {
-    fileHandler.saveAs(input[0]);
+        if(fileHandler.isFileOpen()) {
+            fileHandler.saveAs(input[0]);
+        }else System.out.println("Please open a file first.");
     }
 }

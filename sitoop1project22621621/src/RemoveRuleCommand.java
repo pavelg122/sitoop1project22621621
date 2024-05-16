@@ -57,6 +57,6 @@ public class RemoveRuleCommand implements Command{
         //System.out.println(last);
         //System.out.println(ruleString);
         grammarCommands.removeRule(Long.parseLong(input[0]), Integer.parseInt(input[1]));
-        //System.out.println(fileHandler.getFileContent().toString());
+        System.out.println(fileHandler.getFileContent().toString());
     }
 }

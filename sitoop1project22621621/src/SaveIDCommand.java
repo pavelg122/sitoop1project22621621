@@ -12,26 +12,28 @@ public class SaveIDCommand implements Command{
 
     @Override
     public void invoke(String[] input) throws Exception {
-        Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
-        StringBuilder grammarBuilder = new StringBuilder();
-        String nonterminals = null;
-        ArrayList<String> terminals = null;
-        for(Rule rule: grammar.getRules()){
-            nonterminals = rule.getNonterminals();
-            terminals = rule.getTerminals();
-            assert nonterminals != null;
+        if(fileHandler.isFileOpen()) {
+            Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+            StringBuilder grammarBuilder = new StringBuilder();
+            String nonterminals = null;
+            ArrayList<String> terminals = null;
+            for (Rule rule : grammar.getRules()) {
+                nonterminals = rule.getNonterminals();
+                terminals = rule.getTerminals();
+                assert nonterminals != null;
                 grammarBuilder.append(nonterminals);
-            grammarBuilder.append(" → ");
-            assert terminals != null;
-            for (String terminal : terminals) {
-                grammarBuilder.append(terminal).append(" | ");
+                grammarBuilder.append(" → ");
+                assert terminals != null;
+                for (String terminal : terminals) {
+                    grammarBuilder.append(terminal).append(" | ");
+                }
+                grammarBuilder.append("\n");
             }
-            grammarBuilder.append("\n");
-        }
-        File file = fileHandler.getCurrentFile();
-        PrintWriter writer = new PrintWriter(file);
-        writer.write(grammarBuilder.toString());
-        writer.close();
+            File file = fileHandler.getCurrentFile();
+            PrintWriter writer = new PrintWriter(file);
+            writer.write(grammarBuilder.toString());
+            writer.close();
+        }else System.out.println("Please open a file first.");
     }
 
 }

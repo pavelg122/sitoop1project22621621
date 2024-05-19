@@ -26,7 +26,6 @@ public class IterCommand implements Command{
                 retrieved1 = iterator1.next();
 
             }
-            boolean empty = true;
             String rule1Nonterminals;
             assert retrieved1 != null;
             rule1Nonterminals = retrieved1.getNonterminals();
@@ -34,9 +33,9 @@ public class IterCommand implements Command{
             ArrayList<String> iterFirstRuleTerminals = new ArrayList<>();
             iterFirstRuleTerminals.add(newNonterminal + rule1Nonterminals);
             iterFirstRuleTerminals.add("ε");
-            Set<Rule> iterRules = new HashSet<>();
+            Set<Rule> iterRules = new LinkedHashSet<>();
             iterRules.add(new Rule(newNonterminal, iterFirstRuleTerminals));
-            iterRules.addAll(grammar.getRules());
+            iterRules.addAll(rules);
             iter.setRules(iterRules);
 
             System.out.println("iter grammar id: " + iter.getId());

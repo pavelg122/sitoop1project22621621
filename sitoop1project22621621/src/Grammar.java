@@ -80,8 +80,8 @@ public class Grammar{
 
     public void addRule(String rule) {
         String[] ruleParts = rule.split(" → ",2);
-        System.out.println(ruleParts[0]);
-        System.out.println(ruleParts[1]);
+        //System.out.println(ruleParts[0]);
+        //System.out.println(ruleParts[1]);
             String nonterminals = String.valueOf(ruleParts[0]);
         String[] terminals = ruleParts[1].split(" \\| ");
         ArrayList<String> terminals1 = new ArrayList<>(Arrays.asList(terminals));

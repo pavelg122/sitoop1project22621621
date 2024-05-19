@@ -40,4 +40,7 @@ public class Rule {
     public void setTerminals(ArrayList<String> terminals) {
         this.terminals = terminals;
     }
+    public Rule copy(){
+        return new Rule(this.nonterminals,new ArrayList<>(this.terminals));
+    }
 }

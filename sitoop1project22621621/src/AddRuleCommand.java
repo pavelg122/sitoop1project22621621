@@ -26,9 +26,18 @@ public class AddRuleCommand implements Command{
             int arrowIndex = inputString.indexOf("→");
             inputString.insert(arrowIndex," ");
             inputString.insert(arrowIndex+2," ");
-            System.out.println(inputString);
+            //System.out.println(inputString);
+            for(int i=0;i<inputString.length();i++){
+                if(inputString.charAt(i) == '|'){
+                    inputString.insert(i," ");
+                    i++;
+                    inputString.insert(i+1," ");
+                    i++;
+                }
+            }
             grammarCommands.addRule(Long.parseLong(input[0]), inputString.toString());
-            fileHandler.getFileContent().append(inputString);
+            fileHandler.getFileContent().append(inputString).append("\n");
+            System.out.println("Rule " + inputString + " added successfully");
         }else {System.out.println("Please open a file first.");}
     }
 }

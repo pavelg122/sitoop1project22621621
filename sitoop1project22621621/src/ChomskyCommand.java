@@ -4,9 +4,9 @@ import java.util.Arrays;
 public class ChomskyCommand implements Command{
     private GrammarCommands grammarCommands;
     private FileHandler fileHandler;
-    String[] allNonterminals = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","s","t","u","v","w","x","y","z",
+    String[] allTerminals = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","s","t","u","v","w","x","y","z",
             "0","1","2","3","4","5","6","7","8","9"};
-    String[] allTerminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+    String[] allNonterminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
     public ChomskyCommand(GrammarCommands grammarCommands,FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;

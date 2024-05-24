@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Grammar{
     private long id;
-    private Set<Rule> rules = new HashSet<>();
+    private Set<Rule> rules = new LinkedHashSet<>();
 
     public Grammar() {
         this.id = generateUniqueID();
@@ -53,6 +53,7 @@ public class Grammar{
             for(String terminal:terminals){
                 stringBuilder.append(terminal).append(" | ");
             }
+            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf( "|"));
             stringBuilder.append("\n");
         }
         System.out.println(stringBuilder);
@@ -87,7 +88,6 @@ public class Grammar{
         ArrayList<String> terminals1 = new ArrayList<>(Arrays.asList(terminals));
         //for(String terminal:terminals1){System.out.println(terminal);}
       rules.add(new Rule(nonterminals,terminals1));
-
     }
 
 
@@ -100,12 +100,12 @@ public class Grammar{
             }
             counter++;
         }*/
-            Iterator<Rule> it = rules.iterator();
-            while(it.hasNext()){
-                Rule rule = it.next();
+            for (Rule rule : rules) {
                 counter++;
-                if(counter==number){rules.remove(rule);
-                break;}
+                if (counter == number) {
+                    rules.remove(rule);
+                    break;
+                }
             }
         }else throw new Exception("Index of rule doesn't exist");
     }

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 public class RemoveRuleCommand implements Command{
@@ -20,13 +19,6 @@ public class RemoveRuleCommand implements Command{
         int counter = 0;
         String nonterminals = null;
         ArrayList<String> terminals = null;
-        /*for (Rule rule : rules) {
-            if (counter == number) {
-                nonterminals = rule.getNonterminals();
-                terminals = rule.getTerminals();
-            }
-            counter++;
-        }*/
         for (Rule rule : rules) {
             counter++;
             if (counter == number) {
@@ -36,26 +28,31 @@ public class RemoveRuleCommand implements Command{
             }
         }
         assert nonterminals != null;
-            ruleString.append(nonterminals);
+        ruleString.append(nonterminals);
         ruleString.append(" → ");
         assert terminals != null;
         for (String terminal : terminals) {
             ruleString.append(terminal).append(" | ");
         }
         ruleString.deleteCharAt(ruleString.lastIndexOf("|")+1);
-        //ruleString.deleteCharAt(2);
-        //ruleString.deleteCharAt(4);
-        ruleString.deleteCharAt(ruleString.indexOf("→")-1);
-        ruleString.deleteCharAt(ruleString.indexOf("→")+1);
-        //System.out.println(ruleString);
+        ruleString.deleteCharAt(ruleString.lastIndexOf("|"));
+        ruleString.deleteCharAt(ruleString.length()-1);
+        //ruleString.deleteCharAt(ruleString.indexOf("→")-1);
+        //ruleString.deleteCharAt(ruleString.indexOf("→")+1);
         int index = fileHandler.getFileContent().indexOf(String.valueOf(ruleString));
+        System.out.println(ruleString);
         if (index != -1) {
+            StringBuilder newFileContent = new StringBuilder();
             fileHandler.getFileContent().delete(index, index + ruleString.length());
+            String[] lines = fileHandler.getFileContent().toString().split("\n");
+            for(String line:lines){
+                if(!line.trim().isEmpty()){
+                    newFileContent.append(line).append("\n");
+                }
+            }
+            fileHandler.setFileContent(newFileContent);
             System.out.println("Successfully removed rule " );
         }else throw new Exception("Failed to remove rule" );
-        //char last = ruleString.charAt(ruleString.length() - 5);
-        //System.out.println(last);
-        //System.out.println(ruleString);
         grammarCommands.removeRule(Long.parseLong(input[0]), Integer.parseInt(input[1]));
         System.out.println(fileHandler.getFileContent().toString());
     }

@@ -99,7 +99,7 @@ public class ChomskifyCommand implements Command {
 
                 if (ruleTerminals1.contains(removed.getNonterminals())) {
                     Set<String> newRuleTerminalsSet = new LinkedHashSet<>(ruleTerminals1);
-                    ArrayList<String> newCombinations = getNewCombinations(ruleTerminals1, removed.getNonterminals());
+                    ArrayList<String> newCombinations = getNewCombinations(ruleTerminals1, removed.getNonterminals(), grammarUtils.getAllNonterminals());
                     newRuleTerminalsSet.addAll(newCombinations);
                     newRuleTerminalsSet.remove(epsilon);
                     //ruleTerminals1.addAll(newCombinations);
@@ -178,10 +178,12 @@ public class ChomskifyCommand implements Command {
             }
         }*/
             Set<String> uniqueNonterminals = new LinkedHashSet<>();
+            Map<String,Boolean> uniqueNonterminals1 = new LinkedHashMap<>();
             for(Rule rule:grammarCopyRules){
-                uniqueNonterminals.add(rule.getNonterminals());
+                //uniqueNonterminals.add(rule.getNonterminals());
+                uniqueNonterminals1.put(rule.getNonterminals(),false);
             }
-            for(String unique:uniqueNonterminals){
+            /*for(String unique:uniqueNonterminals){
                 boolean contained = false;
                 for(Rule rule:grammarCopyRules){
                     if(rule.getTerminals().contains(unique)){
@@ -191,6 +193,17 @@ public class ChomskifyCommand implements Command {
                 }
                 if(!contained){
                     grammarCopyRules.removeIf(rule1 -> rule1.getNonterminals().equals(unique));
+                }
+            }*/
+            for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
+                for(Rule rule:grammarCopyRules){
+                    if(rule.getTerminals().contains(entry.getKey())){
+                        entry.setValue(true);
+                        break;
+                    }
+                }
+                if(entry.getValue().equals(false)){
+                    grammarCopyRules.removeIf(rule1 -> rule1.getNonterminals().equals(entry.getKey()));
                 }
             }
             ArrayList<String> usefulNonterminalsList = new ArrayList<>(usefulNonterminals);
@@ -356,65 +369,34 @@ public class ChomskifyCommand implements Command {
      return useful;
     }
 
-    private ArrayList<String> getNewCombinations(ArrayList<String> ruleTerminals1, String nonterminals){
+    private ArrayList<String> getNewCombinations(ArrayList<String> ruleTerminals1, String nonterminals, String[] allNonterminals){
         Set<String> newCombinations1 = new HashSet<>();
-        //Map<String,Integer> originalTerminalsToChange = new HashMap<>();
-        //ArrayList<String> indexesToRemove = new ArrayList<>();
+        ArrayList<String> allNonterminals1 = new ArrayList<>(List.of(allNonterminals));
         for(String terminal:ruleTerminals1){
             if(terminal.contains(nonterminals)){
-               //int frequency = countFreq(nonterminals,terminal);
                 int frequency = countFrequency(terminal, grammarUtils.getAllNonterminals());
-                int[] combinations = new int[frequency];
-               for(int i=0;i<frequency;i++){
-               combinations[i]= i+1;
-               }
-               LinkedHashSet powerSet = powerset(combinations);
-               for(int i=0;i< powerSet.size();i++){
-                   char[] terminalCharArr = terminal.toCharArray();
-                   StringBuilder sb = new StringBuilder();
-                   sb.append(terminalCharArr);
-                   for(int j=frequency;j>0;j--){
-                   if(powerSet.contains(j)){
-                       /*StringBuilder sb = new StringBuilder();
-                       sb.append(terminalCharArr);*/
-                       int indexToDelete = nthIndexOf2(terminal,nonterminals,j);
-                       sb.deleteCharAt(indexToDelete);
-                   }
-                   }
-                   newCombinations1.add(sb.toString());
-               }
-               //originalTerminalsToChange.put(terminal,frequency);
+                String[] arr = terminal.split("");
+                int broi = charsCount(terminal,arr);
+                String[] newa = new String[broi];
+                int ii=0;
+                for (String s : arr) {
+                    if (allNonterminals1.contains(s)) {
+                        newa[ii++] = s;
+                    }
+                }
+                System.out.println(Arrays.toString(newa));
+                LinkedHashSet<String> resultLink = powerset(newa);
+                Set<String> result = new LinkedHashSet<>(resultLink);
+                for(String string:result){
+                    String combined = String.join("",string);
+                    newCombinations1.add(combined);
+                }
             }
         }
         return new ArrayList<>(newCombinations1);
     }
 
-    private static int countFreq(String pat, String txt)
-{
-    int M = pat.length();
-    int N = txt.length();
-    int res = 0;
 
-    /* A loop to slide pat[] one by one */
-    for (int i = 0; i <= N - M; i++) {
-            /* For current index i, check for
-        pattern match */
-        int j;
-        for (j = 0; j < M; j++) {
-            if (txt.charAt(i + j) != pat.charAt(j)) {
-                break;
-            }
-        }
-
-        // if pat[0...M-1] = txt[i, i+1, ...i+M-1]
-        if (j == M) {
-            res++;
-            j = 0;
-        }
-    }
-    return res;
-
-}
 private static int countFrequency(String terminal,String[] allNonterminals){
         int count = 0;
         ArrayList<String> nontermsArr = new ArrayList<>(List.of(allNonterminals));
@@ -426,10 +408,10 @@ private static int countFrequency(String terminal,String[] allNonterminals){
         }
         return count;
 }
-    private static LinkedHashSet powerset(int[] set) {
+    private static LinkedHashSet<String> powerset(String[] set) {
 
         //create the empty power set
-        LinkedHashSet power = new LinkedHashSet();
+        LinkedHashSet<String> power = new LinkedHashSet<>();
 
         //get the number of elements in the set
         int elements = set.length;
@@ -444,7 +426,7 @@ private static int countFrequency(String terminal,String[] allNonterminals){
             String binary = intToBinary(i, elements);
 
             //create a new set
-            LinkedHashSet innerSet = new LinkedHashSet();
+            LinkedHashSet<String> innerSet = new LinkedHashSet<>();
 
             //convert each digit in the current binary number to the corresponding element
             //in the given set
@@ -454,7 +436,8 @@ private static int countFrequency(String terminal,String[] allNonterminals){
             }
 
             //add the new set to the power set
-            power.add(innerSet);
+            String toAdd = String.join("",innerSet);
+            power.add(toAdd);
 
         }
 
@@ -481,17 +464,6 @@ private static int countFrequency(String terminal,String[] allNonterminals){
         return returner;
     }
 
-    static int nthIndexOf2(String input, String substring, int nth) {
-        int index = -1;
-        while (nth > 0) {
-            index = input.indexOf(substring, index + substring.length());
-            if (index == -1) {
-                return -1;
-            }
-            nth--;
-        }
-        return index;
-    }
 
     private int charsCount(String terminal,String[] characters){
         int count=0;

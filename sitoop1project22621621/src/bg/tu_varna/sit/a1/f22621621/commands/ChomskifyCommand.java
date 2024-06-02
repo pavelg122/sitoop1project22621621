@@ -193,66 +193,28 @@ public class ChomskifyCommand implements Command {
             System.out.println(unitPrint);
             //премахване на безполезни правила - правила с терминали, които ги няма в никое правило
 
-            ArrayList<String> firstRuleTerminals = retrieved1.getTerminals();
-            //Set<String> usefulNonterminals = new LinkedHashSet<>();
+            /*
             ArrayList<String> allNonterminals = new ArrayList<>(List.of(grammarUtils.getAllNonterminals()));
-        /*for(String terminal:firstRuleTerminals){
-            String[] chars = terminal.split("");
-            for(String char1:chars){
-                if(allNonterminals.contains(char1)){
-                    usefulNonterminals.add(char1);
-                }
-            }
-        }*/
             Set<String> uniqueNonterminals = new LinkedHashSet<>();
             Map<String,Boolean> uniqueNonterminals1 = new LinkedHashMap<>();
             for(Rule rule:grammarCopyRules){
-                //uniqueNonterminals.add(rule.getNonterminals());
                 uniqueNonterminals1.put(rule.getNonterminals(),false);
             }
-            /*for(String unique:uniqueNonterminals){
-                boolean contained = false;
-                for(Rule rule:grammarCopyRules){
-                    if(rule.getTerminals().contains(unique)){
-                        contained =true;
-                        break;
-                    }
-                }
-                if(!contained){
-                    grammarCopyRules.removeIf(rule1 -> rule1.getNonterminals().equals(unique));
-                }
-            }*/
+
+            for(Rule rule:grammarCopyRules){
             for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
-                for(Rule rule:grammarCopyRules){
                     if(rule.getTerminals().contains(entry.getKey())){
                         entry.setValue(true);
-                        break;
                     }
-                }
-                if(entry.getValue().equals(false)){
-                    grammarCopyRules.removeIf(rule1 -> rule1.getNonterminals().equals(entry.getKey()));
                 }
             }
-            /*ArrayList<String> usefulNonterminalsList = new ArrayList<>(usefulNonterminals);
-            iterator1 = grammarCopyRules.iterator();
-            while (iterator1.hasNext()) {
-                Rule retrieved = iterator1.next();
-                String nonterminals = retrieved.getNonterminals();
-                if (!stringContains(usefulNonterminalsList, nonterminals)) {
-                    iterator1.remove();
-                }
-            }*/
-            for(Rule rule:grammarCopyRules){
-                for(String terminal:rule.getTerminals()){
-                    if(terminal.contains(rule.getNonterminals())){
-                        ArrayList<String> terminalsCopy = new ArrayList<>();
-                        for(String terminal1:rule.getTerminals()){
-                            terminalsCopy.add(terminal1);
-                        }
-                        terminalsCopy.remove(terminal);
-                        rule.setTerminals(terminalsCopy);
-                    }
-                }
+            for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
+                System.out.println("key: " + entry.getKey() + ", value: " + entry.getValue());
+            }
+            for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
+                if(entry.getValue().equals(false)){
+                grammarCopyRules.removeIf(rule1 -> rule1.getNonterminals().equals(entry.getKey()));
+            }
             }
             System.out.println("Rules after useless:");
             StringBuilder uselessPrint = new StringBuilder();
@@ -268,23 +230,92 @@ public class ChomskifyCommand implements Command {
                 uselessPrint.deleteCharAt(uselessPrint.lastIndexOf("|"));
                 uselessPrint.append("\n");
             }
-            System.out.println(uselessPrint);
+            System.out.println(uselessPrint);*/
         //премахване на правила с несамотни терминали (A → aB)
-
+            ArrayList<String> allTerminals = new ArrayList<>(Arrays.asList(grammarUtils.getAllTerminals()));
+            Set<String> termSet = new LinkedHashSet<>();
         for (Rule retrieved : grammarCopyRules) {
             ArrayList<String> ruleTerminals = retrieved.getTerminals();
             for (String terminal : ruleTerminals) {
-                if ((charsCount(terminal.trim(), /*allTerminals*/grammarUtils.getAllTerminals()) == 1 && charsCount(terminal.trim(), /*allNonterminals*/grammarUtils.getAllNonterminals()) == 1)
-                        && terminal.length() == 2) {
-                    String nextNonterminal = grammarUtils.getNextNonterminal(grammarCopyRules, /*allNonterminals*/grammarUtils.getAllNonterminals());
-                    ArrayList<String> newRuleTerminal = getNewRuleTerminal(terminal, /*allTerminals*/grammarUtils.getAllTerminals(), nextNonterminal);
-                    grammarCopyRules.add(new Rule(nextNonterminal.trim(), newRuleTerminal));
-                    String updatedTerminal = terminal.trim().replace(newRuleTerminal.getFirst(),nextNonterminal);
-                    retrieved.getTerminals().remove(terminal.trim());
-                    retrieved.getTerminals().add(updatedTerminal.trim());
+                if (charsCount(terminal.trim(), grammarUtils.getAllTerminals()) >= 1 && terminal.trim().length() >= 2) {
+                    String[] termArr = terminal.split("");
+                    for(String term:termArr){
+                        if(allTerminals.contains(term)){
+                            termSet.add(term);
+                        }
+                    }
                 }
             }
         }
+
+        Set<Rule> newTermRules = new LinkedHashSet<>();
+        for(String term:termSet){
+            String nonterminal = grammarUtils.getNextNonterminal(grammarCopyRules, grammarUtils.getAllNonterminals());
+            ArrayList<String> newTermRuleTerminals = new ArrayList<>();
+            newTermRuleTerminals.add(term);
+            newTermRules.add(new Rule(nonterminal,newTermRuleTerminals));
+            grammarCopyRules.add(new Rule(nonterminal,newTermRuleTerminals));
+        }
+        for(Rule newTermRule:newTermRules){
+            String term = newTermRule.getTerminals().getFirst();
+            String nonterminal = newTermRule.getNonterminals();
+            ArrayList<String> termsToAdd = new ArrayList<>();
+            ArrayList<String> termsToRemove = new ArrayList<>();
+            for(Rule rule:grammarCopyRules){
+                    Set<String> terminalsCopy = new LinkedHashSet<>(rule.getTerminals());
+                    for(String terminalCopy:terminalsCopy){
+                        if(terminalCopy.contains(term)&&terminalCopy.length()>=2&&charsCount(terminalCopy,grammarUtils.getAllNonterminals())>0){
+                            String updatedTerm = terminalCopy.replace(term,nonterminal);
+                            termsToRemove.add(terminalCopy);
+                            termsToAdd.add(updatedTerm);
+                        }
+                    }
+                    termsToRemove.forEach(terminalsCopy::remove);
+                    terminalsCopy.addAll(termsToAdd);
+                    ArrayList<String> updatedTerminals1 = new ArrayList<>(terminalsCopy);
+                    rule.setTerminals(updatedTerminals1);
+
+            }
+        }
+        Set<Rule> rulesToAdd = new LinkedHashSet<>();
+            //корекция на новите правила
+        System.out.println("newtermrules");
+        for(Rule newr:newTermRules){
+            System.out.println(newr.getNonterminals() + newr.getTerminals());
+            for(Rule rule:grammarCopyRules){
+                if(rule.getNonterminals().equals(newr.getNonterminals())){
+                    rule.setTerminals(newr.getTerminals());
+                }
+                else {
+                    ArrayList<String> termsRemove = new ArrayList<>();
+                    ArrayList<String> termsAdd = new ArrayList<>();
+                    Set<String> termsCopy = new LinkedHashSet<>(rule.getTerminals());
+                    for(String term:rule.getTerminals()){
+                        if(term.contains(newr.getTerminals().getFirst())&&
+                                countFreq(newr.getTerminals().getFirst(), term.trim())==term.trim().length()&&term.length()>=2){
+                            String nonterminal = grammarUtils.getNextNonterminal(grammarCopyRules, grammarUtils.getAllNonterminals());
+                           String updated = term.replace(newr.getTerminals().getFirst(),nonterminal);
+                           termsRemove.add(term);
+                           termsAdd.add(updated);
+                           ArrayList<String> newRuleTerms = new ArrayList<>();
+                           newRuleTerms.add(newr.getTerminals().getFirst());
+                           rulesToAdd.add(new Rule(nonterminal,newRuleTerms));
+                           //grammarCopyRules.add(new Rule(nonterminal,newRuleTerms));
+                        }
+                    }
+                    if(!termsRemove.isEmpty()&&!termsAdd.isEmpty()){
+                        termsRemove.forEach(termsCopy::remove);
+                        termsCopy.addAll(termsAdd);
+                        ArrayList<String> updatedTerms = new ArrayList<>(termsCopy);
+                        rule.setTerminals(updatedTerms);
+                    }
+
+                }
+            }
+            grammarCopyRules.addAll(rulesToAdd);
+        }
+
+        //grammarCopyRules.addAll(newTermRules);
             System.out.println("Rules after term:");
             StringBuilder termPrint = new StringBuilder();
             for(Rule rulerule:grammarCopyRules){
@@ -442,17 +473,6 @@ public class ChomskifyCommand implements Command {
     }
 
 
-private static int countFrequency(String terminal,String[] allNonterminals){
-        int count = 0;
-        ArrayList<String> nontermsArr = new ArrayList<>(List.of(allNonterminals));
-        String[] terminalArr = terminal.split("");
-        for(String term:terminalArr){
-            if(nontermsArr.contains(term)){
-                count++;
-            }
-        }
-        return count;
-}
     private static LinkedHashSet<String> powerset(String[] set) {
 
         //create the empty power set
@@ -519,5 +539,30 @@ private static int countFrequency(String terminal,String[] allNonterminals){
             {count++;}
         }
         return count;
+    }
+    static int countFreq(String pat, String txt)
+    {
+        int M = pat.length();
+        int N = txt.length();
+        int res = 0;
+
+        /* A loop to slide pat[] one by one */
+        for (int i = 0; i <= N - M; i++) {
+            /* For current index i, check for
+        pattern match */
+            int j;
+            for (j = 0; j < M; j++) {
+                if (txt.charAt(i + j) != pat.charAt(j)) {
+                    break;
+                }
+            }
+
+            // if pat[0...M-1] = txt[i, i+1, ...i+M-1]
+            if (j == M) {
+                res++;
+                j = 0;
+            }
+        }
+        return res;
     }
 }

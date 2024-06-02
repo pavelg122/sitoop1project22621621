@@ -16,7 +16,7 @@ public class Application {
         GrammarCommands grammarCommands = new GrammarCommandsImpl(grammars);
         GrammarUtils grammarUtils = new GrammarUtils();
         /*fileHandler.open("C:\\Users\\pavel\\Desktop\\testgrammar.txt");
-        fileHandler.saveAs("C:\\Users\\pavel\\Desktop\\testgrammar1.txt");
+        fileHandler.saveAs("C:\\Users\\pavel\\Desktop\\testgrammar5.txt");
         fileHandler.close();*/
         //grammar.addRule(,"A → aA");
         //grammar.addRule(123,"B → bB");

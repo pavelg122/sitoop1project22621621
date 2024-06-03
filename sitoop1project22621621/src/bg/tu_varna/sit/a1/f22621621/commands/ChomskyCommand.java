@@ -44,9 +44,9 @@ public class ChomskyCommand implements Command {
     }
     private boolean cnfTerminalParts(String terminal){
         boolean cnfTerminal = false;
-        char[] terminalCharArr = terminal.toCharArray();
-        if(terminalCharArr.length == 1 && charsCount(terminal,/*allTerminals*/grammarUtils.getAllTerminals()) == terminalCharArr.length){cnfTerminal = true;}
-        else if(terminalCharArr.length == 2 && charsCount(terminal,/*allNonterminals*/grammarUtils.getAllNonterminals()) == terminalCharArr.length){
+        char[] terminalCharArr = terminal.trim().toCharArray();
+        if(terminalCharArr.length == 1 && charsCount(terminal,grammarUtils.getAllTerminals()) == terminalCharArr.length){cnfTerminal = true;}
+        else if(terminalCharArr.length == 2 && charsCount(terminal,grammarUtils.getAllNonterminals()) == terminalCharArr.length){
             cnfTerminal = true;
         }
         return cnfTerminal;

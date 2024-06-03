@@ -30,11 +30,7 @@ public class ChomskifyCommand implements Command {
             }
             Grammar cnfGrammar = new Grammar();
         Set<Rule> rules = grammar.getRules();
-
             Set<Rule> grammarCopyRules = new LinkedHashSet<>();
-            /*for(Rule rule:rules){
-                grammarCopyRules.add(rule.copy());
-            }*/
 
         //добавяне на ново правило в началото
         Iterator<Rule> iterator1 = rules.iterator();
@@ -109,11 +105,10 @@ public class ChomskifyCommand implements Command {
             while (iterator2.hasNext()) {
                 Rule retrieved = iterator2.next();
                 String ruleNonterminals = retrieved.getNonterminals();
-                //ArrayList<String> ruleTerminals1 = retrieved.getTerminals();
                 for(String terminal: retrieved.getTerminals()){
                     if (terminal.contains(removed.getNonterminals())) {
                         Set<String> newRuleTerminalsSet = new LinkedHashSet<>(retrieved.getTerminals());
-                        ArrayList<String> newCombinations = getNewCombinations(terminal, removed.getNonterminals(),grammarUtils.getAllNonterminals());
+                        ArrayList<String> newCombinations = grammarUtils.getNewCombinations(terminal, removed.getNonterminals(),grammarUtils.getAllNonterminals());
                         newRuleTerminalsSet.addAll(newCombinations);
                         newRuleTerminalsSet.removeIf(newTerm -> newTerm.contains(epsilon));
                         ArrayList<String> updatedTerminals = new ArrayList<>(newRuleTerminalsSet);
@@ -237,7 +232,7 @@ public class ChomskifyCommand implements Command {
         for (Rule retrieved : grammarCopyRules) {
             ArrayList<String> ruleTerminals = retrieved.getTerminals();
             for (String terminal : ruleTerminals) {
-                if (charsCount(terminal.trim(), grammarUtils.getAllTerminals()) >= 1 && terminal.trim().length() >= 2) {
+                if (grammarUtils.charsCount(terminal.trim(), grammarUtils.getAllTerminals()) >= 1 && terminal.trim().length() >= 2) {
                     String[] termArr = terminal.split("");
                     for(String term:termArr){
                         if(allTerminals.contains(term)){
@@ -262,9 +257,10 @@ public class ChomskifyCommand implements Command {
             ArrayList<String> termsToAdd = new ArrayList<>();
             ArrayList<String> termsToRemove = new ArrayList<>();
             for(Rule rule:grammarCopyRules){
+                if(rule.getTerminals().size()>1 || !grammarUtils.isTerminalInNormalForm(rule.getTerminals().getFirst())){
                     Set<String> terminalsCopy = new LinkedHashSet<>(rule.getTerminals());
                     for(String terminalCopy:terminalsCopy){
-                        if(terminalCopy.contains(term)&&terminalCopy.length()>=2&&charsCount(terminalCopy,grammarUtils.getAllNonterminals())>0){
+                        if(terminalCopy.contains(term)&&terminalCopy.length()>=2&&grammarUtils.charsCount(terminalCopy,grammarUtils.getAllNonterminals())>0){
                             String updatedTerm = terminalCopy.replace(term,nonterminal);
                             termsToRemove.add(terminalCopy);
                             termsToAdd.add(updatedTerm);
@@ -274,6 +270,7 @@ public class ChomskifyCommand implements Command {
                     terminalsCopy.addAll(termsToAdd);
                     ArrayList<String> updatedTerminals1 = new ArrayList<>(terminalsCopy);
                     rule.setTerminals(updatedTerminals1);
+                }
 
             }
         }
@@ -292,7 +289,7 @@ public class ChomskifyCommand implements Command {
                     Set<String> termsCopy = new LinkedHashSet<>(rule.getTerminals());
                     for(String term:rule.getTerminals()){
                         if(term.contains(newr.getTerminals().getFirst())&&
-                                countFreq(newr.getTerminals().getFirst(), term.trim())==term.trim().length()&&term.length()>=2){
+                                GrammarUtils.countFreq(newr.getTerminals().getFirst(), term.trim())==term.trim().length()&&term.length()>=2){
                             String nonterminal = grammarUtils.getNextNonterminal(grammarCopyRules, grammarUtils.getAllNonterminals());
                            String updated = term.replace(newr.getTerminals().getFirst(),nonterminal);
                            termsRemove.add(term);
@@ -300,7 +297,6 @@ public class ChomskifyCommand implements Command {
                            ArrayList<String> newRuleTerms = new ArrayList<>();
                            newRuleTerms.add(newr.getTerminals().getFirst());
                            rulesToAdd.add(new Rule(nonterminal,newRuleTerms));
-                           //grammarCopyRules.add(new Rule(nonterminal,newRuleTerms));
                         }
                     }
                     if(!termsRemove.isEmpty()&&!termsAdd.isEmpty()){
@@ -315,7 +311,6 @@ public class ChomskifyCommand implements Command {
             grammarCopyRules.addAll(rulesToAdd);
         }
 
-        //grammarCopyRules.addAll(newTermRules);
             System.out.println("Rules after term:");
             StringBuilder termPrint = new StringBuilder();
             for(Rule rulerule:grammarCopyRules){
@@ -332,35 +327,58 @@ public class ChomskifyCommand implements Command {
             }
             System.out.println(termPrint);
         //премахване на правила с 2+ нетерминали отдясно (A → BCD)
-       Set<Rule> addRules = new LinkedHashSet<>();
+
+       //Set<String> newBinTerminals = new LinkedHashSet<>();
+            ArrayList<String> newBinTerminals = new ArrayList<>();
         for (Rule retrieved : grammarCopyRules) {
             ArrayList<String> ruleTerminals = retrieved.getTerminals();
             for (String terminal : ruleTerminals) {
-                if (charsCount(terminal, /*allNonterminals*/grammarUtils.getAllNonterminals()) == terminal.length() && terminal.length() > 2) {
-                    String nextNonterminal1 =  grammarUtils.getNextNonterminal(grammarCopyRules, /*allNonterminals*/grammarUtils.getAllNonterminals());
-                    char[] oldTerminalArr = terminal.toCharArray();
+                if (grammarUtils.charsCount(terminal.trim(), grammarUtils.getAllNonterminals()) == terminal.trim().length() && terminal.trim().length() > 2) {
                     StringBuilder newTerminal = new StringBuilder();
                     //първите два нетерминала - BC
-                    for (int i = 0; i < terminal.length() - 1; i++) {
-                        newTerminal.append(oldTerminalArr[i]);
-                    }
-                    ArrayList<String> newRuleTerminal1 = new ArrayList<>();
-                    for (int i = 0; i < newTerminal.length(); i++) {
-                        newRuleTerminal1.add(String.valueOf(newTerminal.charAt(i)));
-                    }
-                    //ново правило  - F → BC
-                    //grammarCopyRules.add(new Rule(nextNonterminal1, newRuleTerminal1));
-                    addRules.add(new Rule(nextNonterminal1, newRuleTerminal1));
-                    ArrayList<String> oldRuleNewTerminals = new ArrayList<>();
-                    //нов терминал за оригиналното правило - FD
-                    String oldRuleNewTerminalBuilder = nextNonterminal1 +
-                            oldTerminalArr[2];
-                    oldRuleNewTerminals.add(oldRuleNewTerminalBuilder);
-                    retrieved.setTerminals(oldRuleNewTerminals);
+                    String[] terminalParts = terminal.split("");
+                    newTerminal.append(terminalParts[0]).append(terminalParts[1]);
+                    newBinTerminals.add(String.valueOf(newTerminal));
                 }
             }
         }
-        grammarCopyRules.addAll(addRules);
+
+        Set<Rule> newBinRules = new LinkedHashSet<>();
+        for(String bin:newBinTerminals){
+            String nonterminal = grammarUtils.getNextNonterminal(grammarCopyRules,grammarUtils.getAllNonterminals());
+            ArrayList<String> newBinRuleTerminals = new ArrayList<>();
+            newBinRuleTerminals.add(bin);
+            newBinRules.add(new Rule(nonterminal,newBinRuleTerminals));
+            grammarCopyRules.add(new Rule(nonterminal,newBinRuleTerminals));
+        }
+            for(Rule binRule:newBinRules){
+                String term = binRule.getTerminals().getFirst();
+                String nonterminal = binRule.getNonterminals();
+            for(Rule rule:grammarCopyRules){
+                boolean changed=false;
+                ArrayList<String> termsToAddBin = new ArrayList<>();
+                ArrayList<String> termsToRemoveBin = new ArrayList<>();
+                if((rule.getTerminals().size()>1 && !grammarUtils.isRuleTerminalsInNormalForm(rule.getTerminals())) || !grammarUtils.isTerminalInNormalForm(rule.getTerminals().getFirst())){
+                    Set<String> terminalsCopy = new LinkedHashSet<>(rule.getTerminals());
+                    for(String termCopy:terminalsCopy){
+                        if(termCopy.startsWith(term)&&termCopy.trim().length()>2){
+                            String replacementTerminal = termCopy.replace(term,nonterminal);
+                            termsToAddBin.add(replacementTerminal);
+                            termsToRemoveBin.add(termCopy);
+                            changed=true;
+                            break;
+                        }
+                    }
+                    if(changed){termsToRemoveBin.forEach(terminalsCopy::remove);
+                        terminalsCopy.addAll(termsToAddBin);
+                        ArrayList<String> updatedTerminals = new ArrayList<>(terminalsCopy);
+                        rule.setTerminals(updatedTerminals);
+                        break;
+                    }
+                }
+            }
+        }
+
             System.out.println("Rules after bin:");
             StringBuilder binPrint = new StringBuilder();
             for(Rule rulerule:grammarCopyRules){
@@ -398,171 +416,5 @@ public class ChomskifyCommand implements Command {
             }
             fileHandler.getFileContent().append(stringBuilder);
     }else {System.out.println("Please open a file first");}
-    }
-
-    private static ArrayList<String> getNewRuleTerminal(String terminal, String[] allTerminals, String nextNonterminal) {
-        char[] terminalCharArr = terminal.toCharArray();
-
-        char terminalchar;
-        ArrayList<String> terminalsArrList = new ArrayList<>(Arrays.asList(allTerminals));
-        if(terminalsArrList.contains(String.valueOf(terminalCharArr[0]))){
-             terminalchar = terminalCharArr[0];
-        }
-        else{
-        terminalchar = terminalCharArr[1];}
-        String newTerminal = String.valueOf(terminalchar);
-        ArrayList<String> newRuleTerminal = new ArrayList<>();
-        newRuleTerminal.add(newTerminal);
-        return newRuleTerminal;
-    }
-
-    private boolean stringContains(ArrayList<String> arr,String value){
-        boolean useful = false;
-        for (String nonTerminal : arr) {
-            if (arr.contains(value)) {
-                useful = true;
-                break;
-            }
-        }
-     return useful;
-    }
-
-    private ArrayList<String> getNewCombinations(String terminal,String removedEmpty, String[] allNonterminals){
-        ArrayList<String> allNonterminals1 = new ArrayList<>(List.of(allNonterminals));
-
-                //int frequency = countFrequency(terminal, grammarUtils.getAllNonterminals());
-                String[] arr = terminal.split("");
-                int broi = charsCount(terminal,grammarUtils.getAllNonterminals());
-                int broiterm = charsCount(terminal,grammarUtils.getAllTerminals());
-                String[] nonTerms = new String[broi];
-                String[] terms = new String[broiterm];
-                int ii=0;
-                int it=0;
-                for (String s : arr) {
-                    if (allNonterminals1.contains(s)) {
-                        nonTerms[ii++] = s;
-                    }
-                    else { if(broiterm>0){terms[it++]=s;}}
-                }
-               // System.out.println(Arrays.toString(nonTerms));
-                LinkedHashSet<String> resultLink = powerset(nonTerms);
-                Set<String> toRemove = new HashSet<>();
-                for(String powerElement:resultLink){
-                if(powerElement.contains(removedEmpty)){toRemove.add(powerElement);}
-                }
-                resultLink.removeAll(toRemove);
-                if(terms.length==0){resultLink.removeFirst();}
-                Set<String> result = new LinkedHashSet<>(resultLink);
-                Set<String> newCombinations1 = new HashSet<>();
-                for(String string:result){
-                    String combined;
-                    String remainingTerminals = String.join("",terms);
-                    if(terms.length == 0){combined = String.join("",string);}
-                    else {
-                        if(arr[0].equals(terms[0])&& !remainingTerminals.isEmpty()){
-                            combined = String.join("",remainingTerminals,string);
-                        } else combined = String.join("",string,remainingTerminals);
-                    }
-                    newCombinations1.add(combined);
-                }
-        if(terminal.trim().length()>2){
-            newCombinations1.removeIf(moreRemove -> moreRemove.trim().length() == 1);
-        }
-
-        return new ArrayList<>(newCombinations1);
-    }
-
-
-    private static LinkedHashSet<String> powerset(String[] set) {
-
-        //create the empty power set
-        LinkedHashSet<String> power = new LinkedHashSet<>();
-
-        //get the number of elements in the set
-        int elements = set.length;
-
-        //the number of members of a power set is 2^n
-        int powerElements = (int) Math.pow(2,elements);
-
-        //run a binary counter for the number of power elements
-        for (int i = 0; i < powerElements; i++) {
-
-            //convert the binary number to a string containing n digits
-            String binary = intToBinary(i, elements);
-
-            //create a new set
-            LinkedHashSet<String> innerSet = new LinkedHashSet<>();
-
-            //convert each digit in the current binary number to the corresponding element
-            //in the given set
-            for (int j = 0; j < binary.length(); j++) {
-                if (binary.charAt(j) == '1')
-                    innerSet.add(set[j]);
-            }
-
-            //add the new set to the power set
-            String toAdd = String.join("",innerSet);
-            power.add(toAdd);
-
-        }
-
-        return power;
-    }
-
-    /**
-     * Converts the given integer to a String representing a binary number
-     * with the specified number of digits
-     * For example when using 4 digits the binary 1 is 0001
-     * @param binary int
-     * @param digits int
-     * @return String
-     */
-    private static String intToBinary(int binary, int digits) {
-
-        String temp = Integer.toBinaryString(binary);
-        int foundDigits = temp.length();
-        String returner = temp;
-        for (int i = foundDigits; i < digits; i++) {
-            returner = "0" + returner;
-        }
-
-        return returner;
-    }
-
-
-    private int charsCount(String terminal,String[] characters){
-        int count=0;
-        char[] terminalCharArr = terminal.toCharArray();
-        ArrayList<String> charsArrList = new ArrayList<>(Arrays.asList(characters));
-        for(char ch:terminalCharArr){
-            if(charsArrList.contains(String.valueOf(ch)))
-            {count++;}
-        }
-        return count;
-    }
-    static int countFreq(String pat, String txt)
-    {
-        int M = pat.length();
-        int N = txt.length();
-        int res = 0;
-
-        /* A loop to slide pat[] one by one */
-        for (int i = 0; i <= N - M; i++) {
-            /* For current index i, check for
-        pattern match */
-            int j;
-            for (j = 0; j < M; j++) {
-                if (txt.charAt(i + j) != pat.charAt(j)) {
-                    break;
-                }
-            }
-
-            // if pat[0...M-1] = txt[i, i+1, ...i+M-1]
-            if (j == M) {
-                res++;
-                j = 0;
-            }
-        }
-        return res;
     }
 }

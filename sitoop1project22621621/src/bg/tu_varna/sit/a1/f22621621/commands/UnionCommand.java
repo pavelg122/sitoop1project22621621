@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
@@ -10,9 +11,9 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 import java.util.*;
 
 public class UnionCommand implements Command {
-    private GrammarCommands grammarCommands;
-    private FileHandler fileHandler;
-    private GrammarUtils grammarUtils;
+    private final GrammarCommands grammarCommands;
+    private final FileHandler fileHandler;
+    private final GrammarUtils grammarUtils;
 
     public UnionCommand(GrammarCommands grammarCommands,FileHandler fileHandler,GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
@@ -22,9 +23,11 @@ public class UnionCommand implements Command {
 
     @Override
     public void invoke(String[] input) throws Exception {
-        if(fileHandler.isFileOpen()) {
-            createUnionGrammar(input);
-        }else System.out.println("Please open a file first.");
+        try {
+            if (fileHandler.isFileOpen()) {
+                createUnionGrammar(input);
+            } else throw new NoFileOpenedException("No file opened");
+        }catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     private void createUnionGrammar(String[] input) {
@@ -98,7 +101,7 @@ public class UnionCommand implements Command {
         unionTerminals.add(rule1Nonterminals);
         unionTerminals.add(rule2Nonterminals);
 
-        String unionNonterminals = grammarUtils.getNextNonterminal(allRules,/*allNonterminals*/grammarUtils.getAllNonterminals());
+        String unionNonterminals = grammarUtils.getNextNonterminal(allRules,grammarUtils.getAllNonterminals());
         unionRules.add(new Rule(unionNonterminals, unionTerminals));
         unionRules.addAll(grammar1CopyRules);
         unionRules.addAll(grammar2CopyRules);

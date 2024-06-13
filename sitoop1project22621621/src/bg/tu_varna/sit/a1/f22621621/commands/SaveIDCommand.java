@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
@@ -12,8 +13,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class SaveIDCommand implements Command {
-    private GrammarCommands grammarCommands;
-    private FileHandler fileHandler;
+    private final GrammarCommands grammarCommands;
+    private final FileHandler fileHandler;
     public SaveIDCommand(GrammarCommands grammarCommands,FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
         this.fileHandler= fileHandler;
@@ -21,9 +22,11 @@ public class SaveIDCommand implements Command {
 
     @Override
     public void invoke(String[] input) throws Exception {
-        if(fileHandler.isFileOpen()) {
-            saveIDToFile(input);
-        }else System.out.println("Please open a file first.");
+        try {
+            if (fileHandler.isFileOpen()) {
+                saveIDToFile(input);
+            } else throw new NoFileOpenedException("No file opened");
+        }catch(Exception e) {System.out.println(e.getMessage());}
     }
 
     private void saveIDToFile(String[] input) throws FileNotFoundException {
@@ -31,8 +34,8 @@ public class SaveIDCommand implements Command {
         String newFilePath = input[1];
         File newFile = new File(newFilePath);
         StringBuilder grammarBuilder = new StringBuilder();
-        String nonterminals = null;
-        ArrayList<String> terminals = null;
+        String nonterminals;
+        ArrayList<String> terminals;
         for (Rule rule : grammar.getRules()) {
             nonterminals = rule.getNonterminals();
             terminals = rule.getTerminals();

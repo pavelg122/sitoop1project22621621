@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
@@ -10,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class RemoveRuleCommand implements Command {
-    private GrammarCommands grammarCommands;
-    private FileHandler fileHandler;
+    private final GrammarCommands grammarCommands;
+    private final FileHandler fileHandler;
 
     public RemoveRuleCommand(GrammarCommands grammarCommands, FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
@@ -20,10 +21,11 @@ public class RemoveRuleCommand implements Command {
 
     @Override
     public void invoke(String[] input) throws Exception {
-        if(fileHandler.isFileOpen()){
-            removeRule(input);
-        }else System.out.println("Please open a file first.");
-
+        try {
+            if (fileHandler.isFileOpen()) {
+                removeRule(input);
+            } else throw new NoFileOpenedException("No file opened");
+        }catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     private void removeRule(String[] input) throws Exception {

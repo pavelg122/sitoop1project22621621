@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
 import bg.tu_varna.sit.a1.f22621621.models.Grammar;
 
@@ -46,11 +47,18 @@ grammar.removeRule(number);
 
 
     public Grammar getGrammar(long id){
-        Grammar foundGrammar = null;
-        for (Grammar grammar:grammarSet){
-            if(grammar.getId() == id){foundGrammar = grammar;}
-        }
-        return foundGrammar;
+            Grammar foundGrammar = null;
+        try {
+            for (Grammar grammar : grammarSet) {
+                if (grammar.getId() == id) {
+                    foundGrammar = grammar;
+                }
+            }
+            if (foundGrammar == null) {
+                throw new GrammarIDNotFoundException("Grammar ID: " + id + " not found");
+            }
+        }catch (GrammarIDNotFoundException e){System.out.println(e.getMessage());}
+            return foundGrammar;
     }
 
     public Set<Grammar> getGrammarSet() {

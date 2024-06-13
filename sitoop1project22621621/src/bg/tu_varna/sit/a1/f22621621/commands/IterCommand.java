@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
@@ -10,12 +11,9 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 import java.util.*;
 
 public class IterCommand implements Command {
-    private GrammarCommands grammarCommands;
-    private FileHandler fileHandler;
-    private GrammarUtils grammarUtils;
-    //String[] allTerminals = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","s","t","u","v","w","x","y","z",
-            //"0","1","2","3","4","5","6","7","8","9"};
-    //String[] allNonterminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+    private final GrammarCommands grammarCommands;
+    private final FileHandler fileHandler;
+    private final GrammarUtils grammarUtils;
     public IterCommand(GrammarCommands grammarCommands, FileHandler fileHandler, GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;
@@ -24,9 +22,11 @@ public class IterCommand implements Command {
 
     @Override
     public void invoke(String[] input) {
-        if(fileHandler.isFileOpen()) {
-            createIterGrammar(input);
-        }else System.out.println("Please open a file first.");
+        try {
+            if (fileHandler.isFileOpen()) {
+                createIterGrammar(input);
+            } else throw new NoFileOpenedException("No file opened");
+        }catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     private void createIterGrammar(String[] input) {
@@ -42,7 +42,7 @@ public class IterCommand implements Command {
         String rule1Nonterminals;
         assert retrieved1 != null;
         rule1Nonterminals = retrieved1.getNonterminals();
-        String newNonterminal = grammarUtils.getNextNonterminal(rules, /*allNonterminals*/grammarUtils.getAllNonterminals());
+        String newNonterminal = grammarUtils.getNextNonterminal(rules, grammarUtils.getAllNonterminals());
         ArrayList<String> iterFirstRuleTerminals = new ArrayList<>();
         iterFirstRuleTerminals.add(newNonterminal + rule1Nonterminals);
         iterFirstRuleTerminals.add("ε");
@@ -67,21 +67,4 @@ public class IterCommand implements Command {
         grammarCommands.getGrammarSet().add(iter);
     }
 
-    /*private String getNextNonterminal(Set<Rule> rules,String[] allNonterminals){
-        String nextNonterminal = null;
-        Map<String, Boolean> freeTerminals = new HashMap<>();
-        for(String letter:allNonterminals){
-            freeTerminals.put(letter,false);
-        }
-        for(Rule rule:rules){
-            freeTerminals.put(rule.getNonterminals(),true);
-        }
-        for(Map.Entry<String,Boolean> entry:freeTerminals.entrySet()){
-            if(entry.getValue().equals(false)){
-                nextNonterminal = entry.getKey();
-                break;
-            }
-        }
-        return nextNonterminal;
-    }*/
 }

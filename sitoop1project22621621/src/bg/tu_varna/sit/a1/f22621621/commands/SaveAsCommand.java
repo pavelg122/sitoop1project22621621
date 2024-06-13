@@ -1,11 +1,11 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
-import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
 
 public class SaveAsCommand implements Command {
-    private FileHandler fileHandler;
+    private final FileHandler fileHandler;
 
     public SaveAsCommand(FileHandler fileHandler) {
         this.fileHandler = fileHandler;
@@ -13,8 +13,10 @@ public class SaveAsCommand implements Command {
 
     @Override
     public void invoke(String[] input) {
-        if(fileHandler.isFileOpen()) {
-            fileHandler.saveAs(input[0]);
-        }else System.out.println("Please open a file first.");
+        try {
+            if (fileHandler.isFileOpen()) {
+                fileHandler.saveAs(input[0]);
+            } else throw new NoFileOpenedException("No file opened");
+        }catch(Exception e) {System.out.println(e.getMessage());}
     }
 }

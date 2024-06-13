@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
@@ -9,8 +10,8 @@ import bg.tu_varna.sit.a1.f22621621.models.Rule;
 import java.util.*;
 
 public class ConcatCommand implements Command {
-    private GrammarCommands grammarCommands;
-    private FileHandler fileHandler;
+    private final GrammarCommands grammarCommands;
+    private final FileHandler fileHandler;
     String[] allNonterminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
     public ConcatCommand(GrammarCommands grammarCommands,FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
@@ -19,9 +20,11 @@ public class ConcatCommand implements Command {
 
     @Override
     public void invoke(String[] input) {
-        if(fileHandler.isFileOpen()) {
-            createConcatGrammar(input);
-        }else System.out.println("Please open a file first.");
+        try {
+            if (fileHandler.isFileOpen()) {
+                createConcatGrammar(input);
+            } else throw new NoFileOpenedException("No file opened");
+        }catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     private void createConcatGrammar(String[] input) {

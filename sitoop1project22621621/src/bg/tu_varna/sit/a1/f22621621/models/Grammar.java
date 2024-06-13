@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Grammar{
-    private long id;
+    private final long id;
     private Set<Rule> rules = new LinkedHashSet<>();
 
     public Grammar() {
@@ -46,7 +46,7 @@ public class Grammar{
         StringBuilder stringBuilder=  new StringBuilder();
         for(Rule rule:rules){
             counter++;
-            stringBuilder.append("( " + counter + " ) ");
+            stringBuilder.append("( ").append(counter).append(" ) ");
             String nonterminal =  rule.getNonterminals();
                 stringBuilder.append(nonterminal);
 
@@ -62,22 +62,22 @@ public class Grammar{
     }
 
 
-    public void save(String fileName) throws FileNotFoundException {
+    public void save(String fileName) {
+try(PrintWriter printWriter = new PrintWriter(fileName)) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (Rule rule : rules) {
+        String nonterminal = rule.getNonterminals();
+        stringBuilder.append(nonterminal);
 
-        PrintWriter printWriter = new PrintWriter(fileName);
-        StringBuilder stringBuilder=  new StringBuilder();
-        for(Rule rule: rules){
-            String nonterminal =  rule.getNonterminals();
-                stringBuilder.append(nonterminal);
-
-            stringBuilder.append(" → ");
-            ArrayList<String> terminals = rule.getTerminals();
-            for(String terminal:terminals){
-                stringBuilder.append(terminal).append(" | ");
-            }
-            stringBuilder.append("\n");
+        stringBuilder.append(" → ");
+        ArrayList<String> terminals = rule.getTerminals();
+        for (String terminal : terminals) {
+            stringBuilder.append(terminal).append(" | ");
         }
-        printWriter.write(stringBuilder.toString());
+        stringBuilder.append("\n");
+    }
+    printWriter.write(stringBuilder.toString());
+}catch (FileNotFoundException e) {System.out.println(e.getMessage());}
     }
 
 

@@ -4,7 +4,7 @@ import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 
 public class HelpCommand implements Command {
-    private FileHandler fileHandler;
+    private final FileHandler fileHandler;
 
     public HelpCommand(FileHandler fileHandler) {
         this.fileHandler = fileHandler;

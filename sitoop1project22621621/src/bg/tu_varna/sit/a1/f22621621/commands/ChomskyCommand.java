@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
@@ -11,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ChomskyCommand implements Command {
-    private GrammarCommands grammarCommands;
-    private FileHandler fileHandler;
-    private GrammarUtils grammarUtils;
+    private final GrammarCommands grammarCommands;
+    private final FileHandler fileHandler;
+    private final GrammarUtils grammarUtils;
 
     public ChomskyCommand(GrammarCommands grammarCommands,FileHandler fileHandler,GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
@@ -30,7 +31,7 @@ public class ChomskyCommand implements Command {
             } else {
                 System.out.println("Grammar " + grammar.getId() + " isn't in Chomsky Normal Form");
             }
-        }else {System.out.println("Please open a file first.");}
+        }else throw new NoFileOpenedException("No file opened");
     }
     protected boolean isCNF(Grammar grammar){
         for(Rule rule: grammar.getRules()){
@@ -45,20 +46,11 @@ public class ChomskyCommand implements Command {
     private boolean cnfTerminalParts(String terminal){
         boolean cnfTerminal = false;
         char[] terminalCharArr = terminal.trim().toCharArray();
-        if(terminalCharArr.length == 1 && charsCount(terminal,grammarUtils.getAllTerminals()) == terminalCharArr.length){cnfTerminal = true;}
-        else if(terminalCharArr.length == 2 && charsCount(terminal,grammarUtils.getAllNonterminals()) == terminalCharArr.length){
+        if(terminalCharArr.length == 1 && grammarUtils.charsCount(terminal,grammarUtils.getAllTerminals()) == terminalCharArr.length){cnfTerminal = true;}
+        else if(terminalCharArr.length == 2 && grammarUtils.charsCount(terminal,grammarUtils.getAllNonterminals()) == terminalCharArr.length){
             cnfTerminal = true;
         }
         return cnfTerminal;
     }
-    private int charsCount(String terminal,String[] characters){
-        int count=0;
-        char[] terminalCharArr = terminal.toCharArray();
-        ArrayList<String> charsArrList = new ArrayList<>(Arrays.asList(characters));
-        for(char ch:terminalCharArr){
-            if(charsArrList.contains(String.valueOf(ch)))
-            {count++;}
-        }
-        return count;
-    }
+
 }

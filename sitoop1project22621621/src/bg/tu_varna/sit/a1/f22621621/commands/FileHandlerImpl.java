@@ -102,7 +102,7 @@ try{
                 "union <id1> <id2>       finds union of two grammars and prints ID of the new grammar\n" +
                 "concat <id1> <id2>      finds concatenation of two grammars and prints ID of the new grammar\n" +
                 "chomsky <id>            checks if grammar is in Chomsky Normal Form\n" +
-                "cyk <id>                checks if a given word is in the language of the grammar\n" +
+                "cyk <id> <word>         checks if a given word is in the language of the grammar\n" +
                 "iter <id>               finds result of iteration over grammar and prints ID of the new grammar\n" +
                 "empty <id>              checks if the language of a context-free grammar is empty\n" +
                 "chomskify <id>          transforms a grammar in Chomsky Normal Form and prints the ID of the new grammar\n";

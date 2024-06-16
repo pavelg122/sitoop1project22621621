@@ -179,4 +179,12 @@ public class GrammarUtils {
         }
         return terminals.size() == normalFormCount;
     }
+    public int getNonterminalKeyFromMap(String nonterminal, Map<Integer, String> nonterminalsNumbered){
+        for(Map.Entry<Integer,String> entry2 : nonterminalsNumbered.entrySet()){
+            if(entry2.getValue().equals(nonterminal.trim())){
+                return entry2.getKey();
+            }
+        }
+        return -1;
+    }
 }

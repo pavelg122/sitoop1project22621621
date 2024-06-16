@@ -1,11 +1,10 @@
-package bg.tu_varna.sit.a1.f22621621;
+package bg.tu_varna.sit.a1.f22621621.utils;
 
 import bg.tu_varna.sit.a1.f22621621.commands.*;
 import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidCommandException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
-import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 
 import java.util.*;
 

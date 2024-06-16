@@ -1,5 +1,7 @@
 package bg.tu_varna.sit.a1.f22621621.models;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidRuleNumberException;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -47,7 +49,7 @@ public class Grammar{
         for(Rule rule:rules){
             counter++;
             stringBuilder.append("( ").append(counter).append(" ) ");
-            String nonterminal =  rule.getNonterminals();
+            /*String nonterminal =  rule.getNonterminals();
                 stringBuilder.append(nonterminal);
 
             stringBuilder.append(" → ");
@@ -56,7 +58,8 @@ public class Grammar{
                 stringBuilder.append(terminal).append(" | ");
             }
             stringBuilder.deleteCharAt(stringBuilder.lastIndexOf( "|"));
-            stringBuilder.append("\n");
+            stringBuilder.append("\n");*/
+            stringBuilder.append(rule.toString());
         }
         System.out.println(stringBuilder);
     }
@@ -66,7 +69,7 @@ public class Grammar{
 try(PrintWriter printWriter = new PrintWriter(fileName)) {
     StringBuilder stringBuilder = new StringBuilder();
     for (Rule rule : rules) {
-        String nonterminal = rule.getNonterminals();
+        /*String nonterminal = rule.getNonterminals();
         stringBuilder.append(nonterminal);
 
         stringBuilder.append(" → ");
@@ -74,7 +77,9 @@ try(PrintWriter printWriter = new PrintWriter(fileName)) {
         for (String terminal : terminals) {
             stringBuilder.append(terminal).append(" | ");
         }
-        stringBuilder.append("\n");
+        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf( "|"));
+        stringBuilder.append("\n");*/
+        stringBuilder.append(rule.toString());
     }
     printWriter.write(stringBuilder.toString());
 }catch (FileNotFoundException e) {System.out.println(e.getMessage());}
@@ -90,7 +95,7 @@ try(PrintWriter printWriter = new PrintWriter(fileName)) {
     }
 
 
-    public void removeRule(int number) throws Exception {
+    public void removeRule(int number) {
         if(number<=rules.size()){
             int counter=0;
             for (Rule rule : rules) {
@@ -100,7 +105,7 @@ try(PrintWriter printWriter = new PrintWriter(fileName)) {
                     break;
                 }
             }
-        }else throw new Exception("Index of rule doesn't exist");
+        }else throw new InvalidRuleNumberException("Index of rule doesn't exist");
     }
     public static long generateUniqueID(){
         Random random = new Random();
@@ -109,5 +114,12 @@ try(PrintWriter printWriter = new PrintWriter(fileName)) {
         long id = atomicLong.incrementAndGet();
 
         return Math.abs(random.nextLong()) + id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Rule rule : rules) {stringBuilder.append(rule.toString());}
+        return stringBuilder.toString();
     }
 }

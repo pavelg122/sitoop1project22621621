@@ -187,4 +187,11 @@ public class GrammarUtils {
         }
         return -1;
     }
+    public void printStepRules(Set<Rule> rules){
+        StringBuilder print = new StringBuilder();
+        for (Rule rule: rules) {
+            print.append(rule.toString());
+        }
+        System.out.println(print);
+    }
 }

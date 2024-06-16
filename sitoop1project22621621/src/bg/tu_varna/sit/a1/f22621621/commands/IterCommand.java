@@ -54,14 +54,7 @@ public class IterCommand implements Command {
         System.out.println("iter grammar id: " + iter.getId());
         StringBuilder stringBuilder = new StringBuilder();
         for (Rule rule : iter.getRules()) {
-            String nonterminal = rule.getNonterminals();
-            stringBuilder.append(nonterminal);
-            stringBuilder.append(" → ");
-            ArrayList<String> terminals = rule.getTerminals();
-            for (String terminal : terminals) {
-                stringBuilder.append(terminal).append(" | ");
-            }
-            stringBuilder.append("\n");
+            stringBuilder.append(rule.toString());
         }
         fileHandler.getFileContent().append(stringBuilder);
         grammarCommands.getGrammarSet().add(iter);

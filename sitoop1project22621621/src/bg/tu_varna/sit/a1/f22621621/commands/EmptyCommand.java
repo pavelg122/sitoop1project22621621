@@ -37,9 +37,8 @@ public class EmptyCommand implements Command {
         Rule retrieved1 = null;
         if (iterator1.hasNext()) {
             retrieved1 = iterator1.next();
-
         }
-        ArrayList<String> allNonterminals1 = new ArrayList<>(List.of(/*allNonterminals*/grammarUtils.getAllNonterminals()));
+        ArrayList<String> allNonterminals1 = new ArrayList<>(List.of(grammarUtils.getAllNonterminals()));
         assert retrieved1 != null;
         boolean empty = isEmpty(retrieved1, allNonterminals1, grammar);
         if (empty) {

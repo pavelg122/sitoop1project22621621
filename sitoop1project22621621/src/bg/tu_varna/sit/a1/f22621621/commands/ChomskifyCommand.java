@@ -63,20 +63,8 @@ public class ChomskifyCommand implements Command {
                 }
 
                 System.out.println("Rules after start:");
-                StringBuilder startPrint = new StringBuilder();
-                for (Rule rulerule : grammarCopyRules) {
-                    startPrint.append(rulerule.getNonterminals());
-                    startPrint.append(" → ");
-                    ArrayList<String> terminals = rulerule.getTerminals();
-                    for (String terminal : terminals) {
-                        startPrint.append(terminal).append(" | ");
-                    }
-                    startPrint.deleteCharAt(startPrint.lastIndexOf("|") + 1);
-                    startPrint.deleteCharAt(startPrint.lastIndexOf("|") - 1);
-                    startPrint.deleteCharAt(startPrint.lastIndexOf("|"));
-                    startPrint.append("\n");
-                }
-                System.out.println(startPrint);
+                grammarUtils.printStepRules(grammarCopyRules);
+
                 //премахване на правила с празен символ  (A → ε)
                 Iterator<Rule> iterator2 = grammarCopyRules.iterator();
                 Set<Rule> removedEmptyRules = new LinkedHashSet<>();
@@ -101,9 +89,7 @@ public class ChomskifyCommand implements Command {
                         }
                     }
                 }
-                for (Rule rule : removedEmptyRules) {
-                    System.out.println(rule.getNonterminals() + rule.getTerminals().toString());
-                }
+
                 for (Rule removed : removedEmptyRules) {
                     iterator2 = grammarCopyRules.iterator();
                     while (iterator2.hasNext()) {
@@ -122,20 +108,7 @@ public class ChomskifyCommand implements Command {
                     }
                 }
                 System.out.println("Rules after del:");
-                StringBuilder delPrint = new StringBuilder();
-                for (Rule rulerule : grammarCopyRules) {
-                    delPrint.append(rulerule.getNonterminals());
-                    delPrint.append(" → ");
-                    ArrayList<String> terminals = rulerule.getTerminals();
-                    for (String terminal : terminals) {
-                        delPrint.append(terminal).append(" | ");
-                    }
-                    delPrint.deleteCharAt(delPrint.lastIndexOf("|") + 1);
-                    delPrint.deleteCharAt(delPrint.lastIndexOf("|") - 1);
-                    delPrint.deleteCharAt(delPrint.lastIndexOf("|"));
-                    delPrint.append("\n");
-                }
-                System.out.println(delPrint);
+                grammarUtils.printStepRules(grammarCopyRules);
                 //премахване на юнит правила (A → B)
                 Iterator<Rule> iterator3 = grammarCopyRules.iterator();
                 Set<Rule> unitRules = new HashSet<>();
@@ -181,60 +154,8 @@ public class ChomskifyCommand implements Command {
                 }
 
                 System.out.println("Rules after unit:");
-                StringBuilder unitPrint = new StringBuilder();
-                for (Rule rulerule : grammarCopyRules) {
-                    unitPrint.append(rulerule.getNonterminals());
-                    unitPrint.append(" → ");
-                    ArrayList<String> terminals = rulerule.getTerminals();
-                    for (String terminal : terminals) {
-                        unitPrint.append(terminal).append(" | ");
-                    }
-                    unitPrint.deleteCharAt(unitPrint.lastIndexOf("|") + 1);
-                    unitPrint.deleteCharAt(unitPrint.lastIndexOf("|") - 1);
-                    unitPrint.deleteCharAt(unitPrint.lastIndexOf("|"));
-                    unitPrint.append("\n");
-                }
-                System.out.println(unitPrint);
-                //премахване на безполезни правила - правила с терминали, които ги няма в никое правило
+                grammarUtils.printStepRules(grammarCopyRules);
 
-            /*
-            ArrayList<String> allNonterminals = new ArrayList<>(List.of(grammarUtils.getAllNonterminals()));
-            Set<String> uniqueNonterminals = new LinkedHashSet<>();
-            Map<String,Boolean> uniqueNonterminals1 = new LinkedHashMap<>();
-            for(Rule rule:grammarCopyRules){
-                uniqueNonterminals1.put(rule.getNonterminals(),false);
-            }
-
-            for(Rule rule:grammarCopyRules){
-            for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
-                    if(rule.getTerminals().contains(entry.getKey())){
-                        entry.setValue(true);
-                    }
-                }
-            }
-            for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
-                System.out.println("key: " + entry.getKey() + ", value: " + entry.getValue());
-            }
-            for(Map.Entry<String,Boolean> entry:uniqueNonterminals1.entrySet()){
-                if(entry.getValue().equals(false)){
-                grammarCopyRules.removeIf(rule1 -> rule1.getNonterminals().equals(entry.getKey()));
-            }
-            }
-            System.out.println("Rules after useless:");
-            StringBuilder uselessPrint = new StringBuilder();
-            for(Rule rulerule:grammarCopyRules){
-                uselessPrint.append(rulerule.getNonterminals());
-                uselessPrint.append(" → ");
-                ArrayList<String> terminals = rulerule.getTerminals();
-                for (String terminal : terminals) {
-                    uselessPrint.append(terminal).append(" | ");
-                }
-                uselessPrint.deleteCharAt(uselessPrint.lastIndexOf("|")+1);
-                uselessPrint.deleteCharAt(uselessPrint.lastIndexOf("|")-1);
-                uselessPrint.deleteCharAt(uselessPrint.lastIndexOf("|"));
-                uselessPrint.append("\n");
-            }
-            System.out.println(uselessPrint);*/
                 //премахване на правила с несамотни терминали (A → aB)
                 ArrayList<String> allTerminals = new ArrayList<>(Arrays.asList(grammarUtils.getAllTerminals()));
                 Set<String> termSet = new LinkedHashSet<>();
@@ -285,9 +206,7 @@ public class ChomskifyCommand implements Command {
                 }
                 Set<Rule> rulesToAdd = new LinkedHashSet<>();
                 //корекция на новите правила
-                System.out.println("newtermrules");
                 for (Rule newr : newTermRules) {
-                    System.out.println(newr.getNonterminals() + newr.getTerminals());
                     for (Rule rule : grammarCopyRules) {
                         if (rule.getNonterminals().equals(newr.getNonterminals())) {
                             rule.setTerminals(newr.getTerminals());
@@ -320,20 +239,7 @@ public class ChomskifyCommand implements Command {
                 }
 
                 System.out.println("Rules after term:");
-                StringBuilder termPrint = new StringBuilder();
-                for (Rule rulerule : grammarCopyRules) {
-                    termPrint.append(rulerule.getNonterminals());
-                    termPrint.append(" → ");
-                    ArrayList<String> terminals = rulerule.getTerminals();
-                    for (String terminal : terminals) {
-                        termPrint.append(terminal).append(" | ");
-                    }
-                    termPrint.deleteCharAt(termPrint.lastIndexOf("|") + 1);
-                    termPrint.deleteCharAt(termPrint.lastIndexOf("|") - 1);
-                    termPrint.deleteCharAt(termPrint.lastIndexOf("|"));
-                    termPrint.append("\n");
-                }
-                System.out.println(termPrint);
+                grammarUtils.printStepRules(grammarCopyRules);
                 //премахване на правила с 2+ нетерминали отдясно (A → BCD)
 
                 //Set<String> newBinTerminals = new LinkedHashSet<>();
@@ -389,39 +295,14 @@ public class ChomskifyCommand implements Command {
                 }
 
                 System.out.println("Rules after bin:");
-                StringBuilder binPrint = new StringBuilder();
-                for (Rule rulerule : grammarCopyRules) {
-                    binPrint.append(rulerule.getNonterminals());
-                    binPrint.append(" → ");
-                    ArrayList<String> terminals = rulerule.getTerminals();
-                    for (String terminal : terminals) {
-                        binPrint.append(terminal).append(" | ");
-                    }
-                    binPrint.deleteCharAt(binPrint.lastIndexOf("|") + 1);
-                    binPrint.deleteCharAt(binPrint.lastIndexOf("|") - 1);
-                    binPrint.deleteCharAt(binPrint.lastIndexOf("|"));
-                    binPrint.append("\n");
-                }
-                System.out.println(binPrint);
+                grammarUtils.printStepRules(grammarCopyRules);
 
                 cnfGrammar.setRules(grammarCopyRules);
                 System.out.println("Chomskify grammar id: " + cnfGrammar.getId());
                 grammarCommands.getGrammarSet().add(cnfGrammar);
                 StringBuilder stringBuilder = new StringBuilder();
                 for (Rule rule : cnfGrammar.getRules()) {
-                    String nonterminal = rule.getNonterminals();
-                    stringBuilder.append(nonterminal);
-
-                    stringBuilder.append(" → ");
-
-                    ArrayList<String> terminals = rule.getTerminals();
-                    for (String terminal : terminals) {
-                        stringBuilder.append(terminal).append(" | ");
-                    }
-                    stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|") + 1);
-                    stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|") - 1);
-                    stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|"));
-                    stringBuilder.append("\n");
+                    stringBuilder.append(rule.toString());
                 }
                 fileHandler.getFileContent().append(stringBuilder);
             } else throw new NoFileOpenedException("No file opened");

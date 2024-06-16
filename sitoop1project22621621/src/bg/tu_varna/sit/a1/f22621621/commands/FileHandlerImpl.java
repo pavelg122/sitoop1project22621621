@@ -44,7 +44,6 @@ public class FileHandlerImpl implements FileHandler {
             scanner.close();
             System.out.println("Successfully opened file " + currentFile.getName());
             grammars.add(grammar);
-            System.out.println(fileContent);
         }catch (IOException e){System.out.println("Error opening file "+ currentFile.getName());
             isFileOpen = false;
         System.exit(1);}

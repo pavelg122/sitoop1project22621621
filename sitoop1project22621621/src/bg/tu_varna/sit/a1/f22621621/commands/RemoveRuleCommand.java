@@ -34,28 +34,15 @@ public class RemoveRuleCommand implements Command {
         StringBuilder ruleString = new StringBuilder();
         Set<Rule> rules = grammar.getRules();
         int counter = 0;
-        String nonterminals = null;
-        ArrayList<String> terminals = null;
         for (Rule rule : rules) {
             counter++;
             if (counter == number) {
-                nonterminals = rule.getNonterminals();
-                terminals = rule.getTerminals();
+                ruleString.append(rule.toString());
                 break;
             }
         }
-        assert nonterminals != null;
-        ruleString.append(nonterminals);
-        ruleString.append(" → ");
-        assert terminals != null;
-        for (String terminal : terminals) {
-            ruleString.append(terminal).append(" | ");
-        }
-        ruleString.deleteCharAt(ruleString.lastIndexOf("|")+1);
-        ruleString.deleteCharAt(ruleString.lastIndexOf("|"));
-        ruleString.deleteCharAt(ruleString.length()-1);
+
         int index = fileHandler.getFileContent().indexOf(String.valueOf(ruleString));
-        System.out.println(ruleString);
         if (index != -1) {
             StringBuilder newFileContent = new StringBuilder();
             fileHandler.getFileContent().delete(index, index + ruleString.length());
@@ -67,7 +54,7 @@ public class RemoveRuleCommand implements Command {
             }
             fileHandler.setFileContent(newFileContent);
             grammarCommands.removeRule(Long.parseLong(input[0]), Integer.parseInt(input[1]));
-            System.out.println("Successfully removed rule " );
+            System.out.println("Successfully removed rule: " + ruleString);
         }else throw new Exception("Failed to remove rule" );
     }
 }

@@ -40,15 +40,16 @@ for (Grammar grammar:grammarSet){
     }
 
     @Override
-    public void removeRule(long id, int number) throws Exception {
-Grammar grammar =getGrammar(id);
-grammar.removeRule(number);
+    public void removeRule(long id, int number) {
+        try {
+            Grammar grammar = getGrammar(id);
+            grammar.removeRule(number);
+        }catch(Exception e){System.out.println(e.getMessage());}
     }
 
 
     public Grammar getGrammar(long id){
             Grammar foundGrammar = null;
-        try {
             for (Grammar grammar : grammarSet) {
                 if (grammar.getId() == id) {
                     foundGrammar = grammar;
@@ -57,7 +58,6 @@ grammar.removeRule(number);
             if (foundGrammar == null) {
                 throw new GrammarIDNotFoundException("Grammar ID: " + id + " not found");
             }
-        }catch (GrammarIDNotFoundException e){System.out.println(e.getMessage());}
             return foundGrammar;
     }
 

@@ -110,19 +110,7 @@ public class UnionCommand implements Command {
         System.out.println("union grammar id: " + union.getId());
         StringBuilder stringBuilder = new StringBuilder();
         for (Rule rule : unionRules) {
-            String nonterminal = rule.getNonterminals();
-            stringBuilder.append(nonterminal);
-
-            stringBuilder.append(" → ");
-
-            ArrayList<String> terminals = rule.getTerminals();
-            for (String terminal : terminals) {
-                stringBuilder.append(terminal).append(" | ");
-            }
-            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|")+1);
-            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|")-1);
-            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|"));
-            stringBuilder.append("\n");
+            stringBuilder.append(rule.toString());
         }
         fileHandler.getFileContent().append(stringBuilder);
         grammarCommands.getGrammarSet().add(union);

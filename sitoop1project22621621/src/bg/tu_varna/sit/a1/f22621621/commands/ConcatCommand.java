@@ -6,16 +6,19 @@ import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
 import bg.tu_varna.sit.a1.f22621621.models.Grammar;
 import bg.tu_varna.sit.a1.f22621621.models.Rule;
+import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 
 import java.util.*;
 
 public class ConcatCommand implements Command {
     private final GrammarCommands grammarCommands;
     private final FileHandler fileHandler;
+    private final GrammarUtils grammarUtils;
     String[] allNonterminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-    public ConcatCommand(GrammarCommands grammarCommands,FileHandler fileHandler) {
+    public ConcatCommand(GrammarCommands grammarCommands, FileHandler fileHandler, GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;
+        this.grammarUtils = grammarUtils;
     }
 
     @Override
@@ -96,26 +99,14 @@ public class ConcatCommand implements Command {
         String concatTerminals = getTerminals(retrieved1, retrieved2);
         ArrayList<String> concatTerminals1 = new ArrayList<>();
         concatTerminals1.add(concatTerminals);
-        String concatNonterminals = getNextNonterminal(allRules,allNonterminals);
+        String concatNonterminals = grammarUtils.getNextNonterminal(allRules,allNonterminals);
         concatRules.add(new Rule(concatNonterminals, concatTerminals1));
         concatRules.addAll(grammar1CopyRules);
         concatRules.addAll(grammar2CopyRules);
         concat.setRules(concatRules);
 
         for (Rule rule : concatRules) {
-            String nonterminal = rule.getNonterminals();
-            stringBuilder.append(nonterminal);
-
-            stringBuilder.append(" → ");
-
-            ArrayList<String> terminals = rule.getTerminals();
-            for (String terminal : terminals) {
-                stringBuilder.append(terminal).append(" | ");
-            }
-            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|")+1);
-            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|")-1);
-            stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|"));
-            stringBuilder.append("\n");
+            stringBuilder.append(rule.toString());
         }
         fileHandler.getFileContent().append(stringBuilder);
         grammarCommands.getGrammarSet().add(concat);
@@ -144,21 +135,4 @@ public class ConcatCommand implements Command {
         return rule1Nonterminals+rule2Nonterminals;
     }
 
-    private String getNextNonterminal(Set<Rule> rules,String[] allNonterminals){
-        String nextNonterminal = null;
-        Map<String, Boolean> freeTerminals = new HashMap<>();
-        for(String letter:allNonterminals){
-            freeTerminals.put(letter,false);
-        }
-        for(Rule rule:rules){
-            freeTerminals.put(rule.getNonterminals(),true);
-        }
-        for(Map.Entry<String,Boolean> entry:freeTerminals.entrySet()){
-            if(entry.getValue().equals(false)){
-                nextNonterminal = entry.getKey();
-                break;
-            }
-        }
-        return nextNonterminal;
-    }
 }

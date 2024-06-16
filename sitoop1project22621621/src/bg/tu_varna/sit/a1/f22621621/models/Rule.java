@@ -44,4 +44,19 @@ public class Rule {
     public Rule copy(){
         return new Rule(this.nonterminals,new ArrayList<>(this.terminals));
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(nonterminals);
+        sb.append(" → ");
+        for (String terminal : terminals) {
+            sb.append(terminal).append(" | ");
+        }
+        sb.deleteCharAt(sb.lastIndexOf("|")+1);
+        sb.deleteCharAt(sb.lastIndexOf("|")-1);
+        sb.deleteCharAt(sb.lastIndexOf("|"));
+        sb.append("\n");
+        return sb.toString();
+    }
 }

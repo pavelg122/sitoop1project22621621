@@ -15,7 +15,7 @@ public class GrammarCommandsImpl implements GrammarCommands {
 
     @Override
     public void list() {
-        System.out.println("List of IDs: \n");
+        System.out.println("List of IDs:");
 for (Grammar grammar:grammarSet){
     System.out.println(grammar.getId());
 }
@@ -24,11 +24,14 @@ for (Grammar grammar:grammarSet){
     @Override
     public void print(long id) {
     Grammar grammar = getGrammar(id);
+        if(grammar == null) {throw new GrammarIDNotFoundException("Grammar ID: " + id + " not found. Please type " +
+                "list to see all grammars.");
+        }
     grammar.print();
     }
 
     @Override
-    public void save(long id, String fileName) throws FileNotFoundException {
+    public void save(long id, String fileName) {
      Grammar grammar = getGrammar(id);
         grammar.save(fileName);
     }
@@ -41,10 +44,8 @@ for (Grammar grammar:grammarSet){
 
     @Override
     public void removeRule(long id, int number) {
-        try {
             Grammar grammar = getGrammar(id);
             grammar.removeRule(number);
-        }catch(Exception e){System.out.println(e.getMessage());}
     }
 
 

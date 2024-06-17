@@ -1,5 +1,8 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.ContentSearchFailureException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
@@ -19,8 +22,11 @@ public class AddRuleCommand implements Command {
     public void invoke(String[] input) {
         try{
             if(fileHandler.isFileOpen()) {
+                if(input.length !=2){
+                    throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the addRule command.");
+                }
                 addRule(input);
-            }else throw new NoFileOpenedException("No file opened");
+            }else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
         }catch(Exception e) {System.out.println(e.getMessage());}
     }
 
@@ -41,6 +47,9 @@ public class AddRuleCommand implements Command {
             }
         }
         Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+        if(grammar == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                "list to see all grammars.");
+        }
         String grammarString= grammar.toString();
         int index = fileHandler.getFileContent().indexOf(String.valueOf(grammarString));
         if (index != -1) {
@@ -58,6 +67,6 @@ public class AddRuleCommand implements Command {
             System.out.println("Successfully added rule: " + inputString);
             grammarCommands.addRule(Long.parseLong(input[0]), inputString.toString());
             fileHandler.getFileContent().append(inputString).append("\n");
-        }else throw new Exception("Failed to find grammar in content" );
+        }else throw new ContentSearchFailureException("Failed to find the old version of grammar in the current file content." );
     }
 }

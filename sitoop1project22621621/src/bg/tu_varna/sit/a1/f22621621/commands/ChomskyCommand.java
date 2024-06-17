@@ -1,5 +1,7 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
@@ -25,13 +27,19 @@ public class ChomskyCommand implements Command {
     @Override
     public void invoke(String[] input) {
         if(fileHandler.isFileOpen()) {
-            Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
-            if (isCNF(grammar)) {
-                System.out.println("Grammar " + grammar.getId() + " is in Chomsky Normal Form");
-            } else {
-                System.out.println("Grammar " + grammar.getId() + " isn't in Chomsky Normal Form");
+            if(input.length !=1){
+                throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the chomsky command.");
             }
-        }else throw new NoFileOpenedException("No file opened");
+            Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+            if(grammar == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                    "list to see all grammars.");
+            }
+            if (isCNF(grammar)) {
+                System.out.println("Grammar " + grammar.getId() + " is in Chomsky Normal Form.");
+            } else {
+                System.out.println("Grammar " + grammar.getId() + " isn't in Chomsky Normal Form.");
+            }
+        }else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
     }
     protected boolean isCNF(Grammar grammar){
         for(Rule rule: grammar.getRules()){

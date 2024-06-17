@@ -1,5 +1,7 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
@@ -14,7 +16,7 @@ public class ConcatCommand implements Command {
     private final GrammarCommands grammarCommands;
     private final FileHandler fileHandler;
     private final GrammarUtils grammarUtils;
-    String[] allNonterminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+
     public ConcatCommand(GrammarCommands grammarCommands, FileHandler fileHandler, GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;
@@ -25,14 +27,23 @@ public class ConcatCommand implements Command {
     public void invoke(String[] input) {
         try {
             if (fileHandler.isFileOpen()) {
+                if(input.length !=2){
+                    throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the concat command.");
+                }
                 createConcatGrammar(input);
-            } else throw new NoFileOpenedException("No file opened");
+            } else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
         }catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     private void createConcatGrammar(String[] input) {
         Grammar grammar1 = grammarCommands.getGrammar(Long.parseLong(input[0]));
         Grammar grammar2 = grammarCommands.getGrammar(Long.parseLong(input[1]));
+        if(grammar1 == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                "list to see all grammars.");
+        }
+        if(grammar2 == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                "list to see all grammars.");
+        }
         Grammar concat = new Grammar();
         Set<Rule> concatRules = new LinkedHashSet<>();
         Set<Rule> grammar1Rules = grammar1.getRules();
@@ -99,7 +110,7 @@ public class ConcatCommand implements Command {
         String concatTerminals = getTerminals(retrieved1, retrieved2);
         ArrayList<String> concatTerminals1 = new ArrayList<>();
         concatTerminals1.add(concatTerminals);
-        String concatNonterminals = grammarUtils.getNextNonterminal(allRules,allNonterminals);
+        String concatNonterminals = grammarUtils.getNextNonterminal(allRules,grammarUtils.getAllNonterminals());
         concatRules.add(new Rule(concatNonterminals, concatTerminals1));
         concatRules.addAll(grammar1CopyRules);
         concatRules.addAll(grammar2CopyRules);

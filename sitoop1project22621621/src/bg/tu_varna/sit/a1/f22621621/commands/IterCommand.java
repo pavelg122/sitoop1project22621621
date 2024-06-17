@@ -1,5 +1,7 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
@@ -24,13 +26,19 @@ public class IterCommand implements Command {
     public void invoke(String[] input) {
         try {
             if (fileHandler.isFileOpen()) {
+                if(input.length !=1){
+                    throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the iter command.");
+                }
                 createIterGrammar(input);
-            } else throw new NoFileOpenedException("No file opened");
+            } else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
         }catch (Exception e) {System.out.println(e.getMessage());}
     }
 
     private void createIterGrammar(String[] input) {
         Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+        if(grammar == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                "list to see all grammars.");
+        }
         Grammar iter = new Grammar();
         Set<Rule> rules = grammar.getRules();
         Iterator<Rule> iterator1 = rules.iterator();

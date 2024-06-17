@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
@@ -29,11 +30,14 @@ public class SaveCommand implements Command {
                 }
                 else if(input.length == 0){fileHandler.saveInFile();}
                 else throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the save command.");
-            } else throw new NoFileOpenedException("No file opened");
+            } else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
         }catch(Exception e) {System.out.println(e.getMessage());}
     }
     private void saveIDToFile(String[] input) throws FileNotFoundException {
         Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+        if(grammar == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                "list to see all grammars.");
+        }
         String newFilePath = input[1];
         File newFile = new File(newFilePath);
         StringBuilder grammarBuilder = new StringBuilder();

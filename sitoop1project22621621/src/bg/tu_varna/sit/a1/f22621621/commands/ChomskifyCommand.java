@@ -1,6 +1,8 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
-import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarAlreadyInCNFException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarCNFMismatchException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
 import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
@@ -25,10 +27,16 @@ public class ChomskifyCommand implements Command {
     public void invoke(String[] input) {
         try {
             if (fileHandler.isFileOpen()) {
+                if(input.length !=1){
+                    throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the chomskify command.");
+                }
                 Grammar grammar = grammarCommands.getGrammar(Long.parseLong(input[0]));
+                if(grammar == null) {throw new GrammarIDNotFoundException("Grammar ID: " + input[0] + " not found. Please type " +
+                        "list to see all grammars.");
+                }
                 ChomskyCommand chomskyCommand = new ChomskyCommand(grammarCommands, fileHandler, grammarUtils);
                 if (chomskyCommand.isCNF(grammar)) {
-                    throw new GrammarAlreadyInCNFException("Grammar is already in CNF");
+                    throw new GrammarCNFMismatchException("Grammar is already in CNF.");
                 }
                 Grammar cnfGrammar = new Grammar();
                 Set<Rule> rules = grammar.getRules();
@@ -305,7 +313,7 @@ public class ChomskifyCommand implements Command {
                     stringBuilder.append(rule.toString());
                 }
                 fileHandler.getFileContent().append(stringBuilder);
-            } else throw new NoFileOpenedException("No file opened");
+            } else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
         }catch(Exception e) {System.out.println(e.getMessage());}
     }
 }

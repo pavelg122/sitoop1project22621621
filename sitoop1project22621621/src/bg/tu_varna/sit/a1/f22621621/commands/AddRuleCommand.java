@@ -1,23 +1,42 @@
 package bg.tu_varna.sit.a1.f22621621.commands;
 
-import bg.tu_varna.sit.a1.f22621621.exceptions.ContentSearchFailureException;
-import bg.tu_varna.sit.a1.f22621621.exceptions.GrammarIDNotFoundException;
-import bg.tu_varna.sit.a1.f22621621.exceptions.InvalidInputException;
-import bg.tu_varna.sit.a1.f22621621.exceptions.NoFileOpenedException;
+import bg.tu_varna.sit.a1.f22621621.exceptions.*;
 import bg.tu_varna.sit.a1.f22621621.interfaces.Command;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
 import bg.tu_varna.sit.a1.f22621621.models.Grammar;
 
+/**
+ * The type AddRuleCommand. Adds a Rule to a Grammar specified by the user.
+ */
 public class AddRuleCommand implements Command {
     private final GrammarCommands grammarCommands;
     private final FileHandler fileHandler;
 
+    /**
+     * Instantiates a new AddRuleCommand.
+     *
+     * @param grammarCommands the grammar commands
+     * @param fileHandler     the file handler
+     */
     public AddRuleCommand(GrammarCommands grammarCommands, FileHandler fileHandler) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;
     }
-
+    /**
+     * Checks if a file is open and if it isn't a NoFileOpenException is thrown.
+     *Checks if the arguments length is the correct amount and if it isn't an InvalidInputException
+     * is thrown. Gets the Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
+     * After that the String representation of the Grammar gets removed from the file content and appended at the end.
+     * The rule is added to the file content and the content gets updated. Finally, the Rule gets added at the end of
+     * the Grammar.
+     * After that the implementation of the command from the implementation of the GrammarCommands class is called.
+     * The method finds the Grammar in the Grammar Set and adds the rule to the Grammar.
+     * @param input - the user input
+     * @throws InvalidInputException - when the number of input arguments doesn't match the command arguments count
+     * @throws NoFileOpenedException - when a file isn't open
+     * @throws GrammarIDNotFoundException - when a Grammar isn't found
+     */
     @Override
     public void invoke(String[] input) {
         try{

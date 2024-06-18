@@ -13,14 +13,37 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+/**
+ * The type SaveCommand.
+ */
 public class SaveCommand implements Command {
     private final FileHandler fileHandler;
     private final GrammarCommands grammarCommands;
+
+    /**
+     * Instantiates a new SaveCommand.
+     *
+     * @param fileHandler     the file handler
+     * @param grammarCommands the grammar commands
+     */
     public SaveCommand(FileHandler fileHandler, GrammarCommands grammarCommands) {
         this.fileHandler = fileHandler;
         this.grammarCommands = grammarCommands;
     }
-
+    /**
+     * Checks if a file is open and if it isn't a NoFileOpenException is thrown.
+     *Checks if the arguments length is the correct amount and if it isn't an InvalidInputException
+     * is thrown. If the input array has no elements it calls the implementation of the command which is contained in the implementation of the FileHandler class.
+     * The method opens the current file and writes all content saved on the application in it.
+     * If the input array has 2 elements another version of the save command is called which saves a Grammar in a file specified
+     * by the user. The first element is the ID of the Grammar and the second is the file location.
+     * If the Grammar isn't found a GrammarIDNotFoundException is thrown and an error message is displayed.
+     * If it's found the content of the Grammar is converted to String and written in the file.
+     * @param input - the user input
+     * @throws InvalidInputException - when the number of input arguments doesn't match the command arguments count
+     * @throws NoFileOpenedException - when a file isn't open
+     * @throws GrammarIDNotFoundException - when a Grammar isn't found
+     */
     @Override
     public void invoke(String[] input) {
         try {

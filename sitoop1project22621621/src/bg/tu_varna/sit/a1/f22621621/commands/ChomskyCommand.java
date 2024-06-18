@@ -13,11 +13,21 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The type Chomsky command.
+ */
 public class ChomskyCommand implements Command {
     private final GrammarCommands grammarCommands;
     private final FileHandler fileHandler;
     private final GrammarUtils grammarUtils;
 
+    /**
+     * Instantiates a new Chomsky command.
+     *
+     * @param grammarCommands the grammar commands
+     * @param fileHandler     the file handler
+     * @param grammarUtils    the grammar utils
+     */
     public ChomskyCommand(GrammarCommands grammarCommands,FileHandler fileHandler,GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;
@@ -41,6 +51,13 @@ public class ChomskyCommand implements Command {
             }
         }else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
     }
+
+    /**
+     * Is cnf boolean.
+     *
+     * @param grammar the grammar
+     * @return the boolean
+     */
     protected boolean isCNF(Grammar grammar){
         for(Rule rule: grammar.getRules()){
             for(String terminal: rule.getTerminals()){

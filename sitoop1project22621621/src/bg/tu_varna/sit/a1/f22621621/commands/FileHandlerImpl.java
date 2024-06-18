@@ -10,12 +10,20 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.Set;
 
+/**
+ * The type File handler.
+ */
 public class FileHandlerImpl implements FileHandler {
     private File currentFile;
     private StringBuilder fileContent = new StringBuilder();
    private boolean isFileOpen = false;
     private Set<Grammar> grammarSet;
 
+    /**
+     * Instantiates a new File handler.
+     *
+     * @param grammarSet the grammar set
+     */
     public FileHandlerImpl(Set<Grammar> grammarSet) {
         this.grammarSet = grammarSet;
     }
@@ -72,13 +80,13 @@ try{
 
     @Override
     public void saveAs(String newFilePath) {
-        File newFile = new File(newFilePath);
         try{
+            File newFile = new File(newFilePath);
             PrintWriter writer = new PrintWriter(newFile);
             writer.write(fileContent.toString());
             writer.close();
             System.out.println("Successfully saved " + newFile.getName());
-        }catch(IOException e){
+        }catch(Exception e){
             System.out.println("Error saving file: " + e.getMessage());
         }
     }
@@ -114,14 +122,6 @@ try{
         System.exit(0);
     }
 
-    public File getCurrentFile() {
-        return currentFile;
-    }
-
-    public void setCurrentFile(File currentFile) {
-        this.currentFile = currentFile;
-    }
-
     public StringBuilder getFileContent() {
         return fileContent;
     }
@@ -130,7 +130,4 @@ try{
         this.fileContent = fileContent;
     }
 
-    public void setFileOpen(boolean fileOpen) {
-        isFileOpen = fileOpen;
-    }
 }

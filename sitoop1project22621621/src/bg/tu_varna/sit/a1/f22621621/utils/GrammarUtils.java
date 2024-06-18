@@ -4,30 +4,59 @@ import bg.tu_varna.sit.a1.f22621621.models.Rule;
 
 import java.util.*;
 
+/**
+ * The type GrammarUtils. It containts methods that are used in the implementation of
+ * multiple commands and contains the necessary String arrays that define the terminals and nonterminals
+ * that are used in the application.
+ */
 public class GrammarUtils {
     private String[] allTerminals = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","s","t","u","v","w","x","y","z",
             "0","1","2","3","4","5","6","7","8","9"};
     private String[] allNonterminals = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+
+    /**
+     * Instantiates a new GrammarUtils object.
+     */
     public GrammarUtils() {
     }
 
+    /**
+     * Returns the String array of all terminals. The terminals are all lowercase letters from a-z
+     * and the numbers from 0-9.
+     *
+     * @return String array that contains all terminals.
+     */
     public String[] getAllTerminals() {
         return allTerminals;
     }
 
+    /**
+     * Returns the String array of all nonterminals. The nonterminals are all uppercase letters from A-Z.
+     *
+     * @return String array that contains all nonterminals.
+     */
     public String[] getAllNonterminals() {
         return allNonterminals;
     }
+
+    /**
+     * Returns the next free nonterminal String from all nonterminals.
+     * Creates a Map that contains all nonterminals and if they are already used.
+     * If a Grammar already has Rules that contain the nonterminals A,B,C and D the next free nonterminal is E.
+     * @param rules           all rules of the grammar
+     * @param allNonterminals all nonterminals
+     * @return String - the next free nonterminal which is an uppercase letter
+     */
     public String getNextNonterminal(Set<Rule> rules, String[] allNonterminals){
         String nextNonterminal = null;
-        Map<String, Boolean> freeTerminals = new HashMap<>();
+        Map<String, Boolean> usedTerminals = new HashMap<>();
         for(String letter:allNonterminals){
-            freeTerminals.put(letter,false);
+            usedTerminals.put(letter,false);
         }
         for(Rule rule:rules){
-            freeTerminals.put(rule.getNonterminals(),true);
+            usedTerminals.put(rule.getNonterminals(),true);
         }
-        for(Map.Entry<String,Boolean> entry:freeTerminals.entrySet()){
+        for(Map.Entry<String,Boolean> entry:usedTerminals.entrySet()){
             if(entry.getValue().equals(false)){
                 nextNonterminal = entry.getKey();
                 break;
@@ -35,6 +64,14 @@ public class GrammarUtils {
         }
         return nextNonterminal;
     }
+
+    /**
+     * Counts the frequency of a pattern String in another text String .
+     *
+     * @param pat the pattern
+     * @param txt the text
+     * @return int - the number of times the pattern is contained in the text
+     */
     public static int countFreq(String pat, String txt)
     {
         int M = pat.length();
@@ -60,6 +97,15 @@ public class GrammarUtils {
         }
         return res;
     }
+
+    /**
+     * Counts the number of times elements of a characters String array
+     * are present in a terminal String.
+     *
+     * @param terminal   the terminal String
+     * @param characters the characters String array
+     * @return int - the number of occurrences
+     */
     public int charsCount(String terminal,String[] characters){
         int count=0;
         char[] terminalCharArr = terminal.toCharArray();
@@ -70,6 +116,14 @@ public class GrammarUtils {
         }
         return count;
     }
+
+    /**
+     * Returns the power set from the given set by using a binary counter
+     * Example: S = {a,b,c}
+     * P(S) = {[], [c], [b], [b, c], [a], [a, c], [a, b], [a, b, c]}
+     * @param set String[]
+     * @return LinkedHashSet
+     */
     public static LinkedHashSet<String> powerset(String[] set) {
 
         //create the empty power set
@@ -125,6 +179,18 @@ public class GrammarUtils {
 
         return returner;
     }
+
+    /**
+     * Retuns a String ArrayList that contains all new combinations that are derived of a
+     * terminal String using powerset of all nonterminals in the terminal. Removes the combinations
+     * that contain the removedEmpty nonterminal. Then it combines the nonterminals and terminals that are contained
+     * in the terminal in their normal order.
+     *
+     * @param terminal        the terminal String
+     * @param removedEmpty    a nonterminal String of a Rule that contains an empty terminal
+     * @param allNonterminals the allNonterminals String set
+     * @return the String ArrayList - that contains the combinations
+     */
     public ArrayList<String> getNewCombinations(String terminal,String removedEmpty, String[] allNonterminals){
         ArrayList<String> allNonterminals1 = new ArrayList<>(List.of(allNonterminals));
         String[] arr = terminal.split("");
@@ -166,12 +232,29 @@ public class GrammarUtils {
 
         return new ArrayList<>(newCombinations1);
     }
+
+    /**
+     * Checks if a terminal String is in Chomsky Normal Form. A terminal is in normal form
+     * when the terminal is either a single lowercase letter or two uppercase letters.
+     *
+     * @param terminal the terminal String
+     * @return boolean - true or false
+     */
     public boolean isTerminalInNormalForm(String terminal){
         boolean normalForm = false;
         if(terminal.trim().length() == 1 && charsCount(terminal,getAllTerminals()) == 1){normalForm=true;}
         else if(terminal.trim().length() == 2 && charsCount(terminal,getAllNonterminals())==2){normalForm = true;}
         return normalForm;
     }
+
+    /**
+     * Checks if all terminals of a Rule are in Chomsky Normal Form.
+     * Returns true if the count of the terminals in normal form are equal
+     * to the count of all terminals of the Rule.
+     *
+     * @param terminals the terminals of the rule
+     * @return boolean - true or false
+     */
     public boolean isRuleTerminalsInNormalForm(ArrayList<String> terminals){
         int normalFormCount = 0;
         for(String terminal:terminals){
@@ -179,6 +262,17 @@ public class GrammarUtils {
         }
         return terminals.size() == normalFormCount;
     }
+
+    /**
+     * Returns the number of the nonterminal from the nonterminalsNumbered Map.
+     * The map contains all nonterminals of a Grammar with their index
+     * numbers. The nonterminal of the first Rule of the Grammar has the number 1, the nonterminal of the second
+     * Rule of the Grammar has the number 2 and so on.
+     *
+     * @param nonterminal          the nonterminal
+     * @param nonterminalsNumbered the nonterminalsNumbered Map
+     * @return the number of the nonterminal String
+     */
     public int getNonterminalKeyFromMap(String nonterminal, Map<Integer, String> nonterminalsNumbered){
         for(Map.Entry<Integer,String> entry2 : nonterminalsNumbered.entrySet()){
             if(entry2.getValue().equals(nonterminal.trim())){
@@ -187,6 +281,12 @@ public class GrammarUtils {
         }
         return -1;
     }
+
+    /**
+     * Appends the String representation of all Rules of a Set and prints it out.
+     * Used to display each step of the algorithm that transforms a Grammar in Chomsky Normal Form.
+     * @param rules the Rules Set
+     */
     public void printStepRules(Set<Rule> rules){
         StringBuilder print = new StringBuilder();
         for (Rule rule: rules) {

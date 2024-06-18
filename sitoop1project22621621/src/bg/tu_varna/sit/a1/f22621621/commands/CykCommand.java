@@ -13,11 +13,21 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 
 import java.util.*;
 
+/**
+ * The type Cyk command.
+ */
 public class CykCommand implements Command {
     private final GrammarCommands grammarCommands;
     private final FileHandler fileHandler;
     private final GrammarUtils grammarUtils;
 
+    /**
+     * Instantiates a new Cyk command.
+     *
+     * @param grammarCommands the grammar commands
+     * @param fileHandler     the file handler
+     * @param grammarUtils    the grammar utils
+     */
     public CykCommand(GrammarCommands grammarCommands, FileHandler fileHandler, GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;
@@ -125,25 +135,54 @@ public class CykCommand implements Command {
     }
 
 
+    /**
+     * The type Triple.
+     *
+     * @param <L> the type parameter
+     * @param <M> the type parameter
+     * @param <R> the type parameter
+     */
     public static class Triple<L,M,R>{
         private final L left;
         private final M middle;
         private final R right;
 
+        /**
+         * Instantiates a new Triple.
+         *
+         * @param left   the left
+         * @param middle the middle
+         * @param right  the right
+         */
         public Triple(L left, M middle, R right) {
             this.left = left;
             this.middle = middle;
             this.right = right;
         }
 
+        /**
+         * Gets left.
+         *
+         * @return the left
+         */
         public L getLeft() {
             return left;
         }
 
+        /**
+         * Gets middle.
+         *
+         * @return the middle
+         */
         public M getMiddle() {
             return middle;
         }
 
+        /**
+         * Gets right.
+         *
+         * @return the right
+         */
         public R getRight() {
             return right;
         }

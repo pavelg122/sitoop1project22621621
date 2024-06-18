@@ -12,11 +12,21 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 
 import java.util.*;
 
+/**
+ * The type Concat command.
+ */
 public class ConcatCommand implements Command {
     private final GrammarCommands grammarCommands;
     private final FileHandler fileHandler;
     private final GrammarUtils grammarUtils;
 
+    /**
+     * Instantiates a new Concat command.
+     *
+     * @param grammarCommands the grammar commands
+     * @param fileHandler     the file handler
+     * @param grammarUtils    the grammar utils
+     */
     public ConcatCommand(GrammarCommands grammarCommands, FileHandler fileHandler, GrammarUtils grammarUtils) {
         this.grammarCommands = grammarCommands;
         this.fileHandler = fileHandler;

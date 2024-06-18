@@ -8,19 +8,38 @@ import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
 
 import java.util.*;
 
+/**
+ * The type CommandHandler. It handles all user input and calls the necessary command.
+ */
 public class CommandHandler {
     private final FileHandler fileHandler;
     private final GrammarCommands grammarCommands;
     private final GrammarUtils grammarUtils;
     private final Scanner scanner;
 
+    /**
+     * Instantiates a new CommandHandler.
+     *
+     * @param fileHandler     the file handler
+     * @param grammarCommands the grammar commands
+     * @param grammarUtils    the grammar utils
+     * @param scanner         the scanner
+     */
     public CommandHandler(FileHandler fileHandler, GrammarCommands grammarCommands, GrammarUtils grammarUtils, Scanner scanner) {
         this.fileHandler = fileHandler;
         this.grammarCommands = grammarCommands;
         this.grammarUtils = grammarUtils;
         this.scanner = scanner;
     }
-    public void run() {
+
+    /**
+     * Handles the user's input. Initializes a Map that contains all commands of the application and the key word used to invoke every command.
+     * Prints a welcome message and then uses the scanner to read each line of the user's input.
+     * Invokes a command if the line starts with a key word. Throws an InvalidCommandException and displays an error message if it fails
+     * to find a command.
+     * @throws InvalidCommandException if the first element of the user input is not a key word in the commands Map
+     */
+    public void run() throws InvalidCommandException {
         Map<String, Command> commands = new HashMap<>();
         commands.put("open",new OpenCommand(fileHandler,grammarCommands));
         commands.put("close",new CloseCommand(fileHandler));

@@ -7,8 +7,17 @@ import bg.tu_varna.sit.a1.f22621621.models.Grammar;
 import java.io.FileNotFoundException;
 import java.util.Set;
 
+/**
+ * The type Grammar commands.
+ */
 public class GrammarCommandsImpl implements GrammarCommands {
     private Set<Grammar> grammarSet;
+
+    /**
+     * Instantiates a new Grammar commands.
+     *
+     * @param grammarSet the grammar set
+     */
     public GrammarCommandsImpl(Set<Grammar> grammarSet) {
         this.grammarSet = grammarSet;
     }
@@ -16,9 +25,13 @@ public class GrammarCommandsImpl implements GrammarCommands {
     @Override
     public void list() {
         System.out.println("List of IDs:");
-for (Grammar grammar:grammarSet){
-    System.out.println(grammar.getId());
-}
+        if (grammarSet.isEmpty()) {
+            System.out.println("No grammars found");
+        }
+        else {
+            for (Grammar grammar:grammarSet){
+            System.out.println(grammar.getId());}
+        }
     }
 
     @Override

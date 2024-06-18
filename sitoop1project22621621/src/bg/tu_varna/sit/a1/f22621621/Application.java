@@ -9,7 +9,15 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 
 import java.util.*;
 
+/**
+ * The type Application.
+ */
 public class Application {
+    /**
+     * The entry point of the application.
+     * Initializes the necessary objects for the CommandHandler class and runs the application.
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         Set<Grammar> grammars = new HashSet<>();
         FileHandler fileHandler= new FileHandlerImpl(grammars);

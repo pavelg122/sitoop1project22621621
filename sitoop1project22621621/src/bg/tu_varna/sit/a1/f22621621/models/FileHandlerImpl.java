@@ -1,7 +1,6 @@
-package bg.tu_varna.sit.a1.f22621621.commands;
+package bg.tu_varna.sit.a1.f22621621.models;
 
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
-import bg.tu_varna.sit.a1.f22621621.models.Grammar;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,7 +10,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- * The type File handler.
+ * The type FileHandlerImpl. Contains the implementation of the methods of the FileHandler interface.
  */
 public class FileHandlerImpl implements FileHandler {
     private File currentFile;
@@ -20,19 +19,28 @@ public class FileHandlerImpl implements FileHandler {
     private Set<Grammar> grammarSet;
 
     /**
-     * Instantiates a new File handler.
+     * Instantiates a new FileHandlerImpl.
      *
      * @param grammarSet the grammar set
      */
     public FileHandlerImpl(Set<Grammar> grammarSet) {
         this.grammarSet = grammarSet;
     }
-
+    /**
+     * Returns a boolean indicating whether a file is currently open
+     *
+     * @return boolean - true or false
+     */
     @Override
     public boolean isFileOpen() {
         return isFileOpen;
     }
-
+    /**
+     * Opens a file, transforms its content to a Grammar object and saves the file content in the application.
+     *
+     * @param filePath file path of the file to be opened
+     * @param grammars Grammar Set containing all Grammars
+     */
     @Override
     public void open(String filePath,Set<Grammar> grammars) throws IOException {
         currentFile = new File(filePath);
@@ -56,7 +64,10 @@ public class FileHandlerImpl implements FileHandler {
             isFileOpen = false;
         System.exit(1);}
     }
-
+    /**
+     * Closes the currently open file, changes the flag for an open file, clears the temporary file content and the Grammar Set.
+     *
+     */
     @Override
     public void close() {
         isFileOpen = false;
@@ -66,7 +77,10 @@ public class FileHandlerImpl implements FileHandler {
         System.out.println(fileContent);
         grammarSet.clear();
     }
-
+    /**
+     * Saves the temporary file content to the currently open file.
+     *
+     */
     @Override
     public void saveInFile() {
 try{
@@ -77,7 +91,10 @@ try{
 }catch(IOException e){System.out.println("Error saving file " + e.getMessage());}
 
     }
-
+    /**
+     * Saves the temporary file content to a file location defined by the user.
+     * @param newFilePath path of the file
+     */
     @Override
     public void saveAs(String newFilePath) {
         try{
@@ -90,7 +107,10 @@ try{
             System.out.println("Error saving file: " + e.getMessage());
         }
     }
-
+    /**
+     * Displays information about all supported commands by the application.
+     *
+     */
     @Override
     public void help() {
 
@@ -115,17 +135,26 @@ try{
                 "chomskify <id>          transforms a grammar in Chomsky Normal Form and prints the ID of the new grammar\n";
         System.out.println(stringBuilder);
     }
-
+    /**
+     * Displays a message and exits the application.
+     *
+     */
     @Override
     public void exit() {
         System.out.println("Exiting the program...");
         System.exit(0);
     }
-
+    /**
+     * Gets the temporary file content
+     * @return temporary file content
+     */
     public StringBuilder getFileContent() {
         return fileContent;
     }
-
+    /**
+     * Sets the temporary file content
+     * @param fileContent the new temporary file content
+     */
     public void setFileContent(StringBuilder fileContent) {
         this.fileContent = fileContent;
     }

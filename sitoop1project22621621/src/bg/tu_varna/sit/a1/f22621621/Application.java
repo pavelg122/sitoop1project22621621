@@ -1,9 +1,10 @@
 package bg.tu_varna.sit.a1.f22621621;
 
-import bg.tu_varna.sit.a1.f22621621.commands.*;
 import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
+import bg.tu_varna.sit.a1.f22621621.models.FileHandlerImpl;
 import bg.tu_varna.sit.a1.f22621621.models.Grammar;
+import bg.tu_varna.sit.a1.f22621621.models.GrammarCommandsImpl;
 import bg.tu_varna.sit.a1.f22621621.utils.CommandHandler;
 import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 

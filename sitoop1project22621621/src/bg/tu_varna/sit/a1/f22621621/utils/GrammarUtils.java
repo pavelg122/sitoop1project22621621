@@ -294,4 +294,24 @@ public class GrammarUtils {
         }
         System.out.println(print);
     }
+    /**
+     * Finds the shared nonterminals between two Grammars.
+     * @param grammar1Rules the Rules of the first Grammar
+     * @param grammar2Rules the Rules of the second Grammar
+     * @return a String Set containing the common nonterminals
+     */
+    public Set<String> getCommonNonterminals(Set<Rule> grammar1Rules, Set<Rule> grammar2Rules) {
+        Set<String> grammar1Nonterminals = new LinkedHashSet<>();
+        Set<String> grammar2Nonterminals = new LinkedHashSet<>();
+        for(Rule rule: grammar1Rules){
+            grammar1Nonterminals.add(rule.getNonterminals());
+        }
+
+        for(Rule rule: grammar2Rules){
+            grammar2Nonterminals.add(rule.getNonterminals());
+        }
+        Set<String> commonNonterminals = new LinkedHashSet<>(grammar1Nonterminals);
+        commonNonterminals.retainAll(grammar2Nonterminals);
+        return commonNonterminals;
+    }
 }

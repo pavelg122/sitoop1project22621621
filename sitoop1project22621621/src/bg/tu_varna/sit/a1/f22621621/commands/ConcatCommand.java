@@ -13,7 +13,8 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 import java.util.*;
 
 /**
- * The type Concat command.
+ * The type ConcatCommand. It finds the concatenation of two Grammars and creates a new Grammar. Prints the ID
+ * of the new Grammar.
  */
 public class ConcatCommand implements Command {
     private final GrammarCommands grammarCommands;
@@ -21,7 +22,7 @@ public class ConcatCommand implements Command {
     private final GrammarUtils grammarUtils;
 
     /**
-     * Instantiates a new Concat command.
+     * Instantiates a new ConcatCommand.
      *
      * @param grammarCommands the grammar commands
      * @param fileHandler     the file handler
@@ -32,7 +33,20 @@ public class ConcatCommand implements Command {
         this.fileHandler = fileHandler;
         this.grammarUtils = grammarUtils;
     }
-
+    /**
+     * Checks if a file is open and if it isn't a NoFileOpenException is thrown.
+     *Checks if the arguments length is the correct amount and if it isn't an InvalidInputException
+     * is thrown. Gets the first Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
+     * Then it gets the second Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
+     * The method creates a copy of the Rules of both Grammars and then finds the shared nonterminals in both Grammars. Replaces the common
+     * nonterminals in both Grammars. After that it gets the start nonterminals of both Grammars and concatenates them.
+     * Creates a new Rule with the concatenated start nonterminals and adds it first. After that adds the updated Rules of both Grammars.
+     * Appends the String representation of the new Grammar to the temp file content and adds the new Grammar to the Grammar Set.
+     * @param input - the user input
+     * @throws InvalidInputException - when the number of input arguments doesn't match the command arguments count
+     * @throws NoFileOpenedException - when a file isn't open
+     * @throws GrammarIDNotFoundException - when a Grammar isn't found
+     */
     @Override
     public void invoke(String[] input) {
         try {
@@ -68,7 +82,7 @@ public class ConcatCommand implements Command {
             grammar2CopyRules.add(rule.copy());
         }
 
-        Set<String> commonNonterminals = getCommonNonterminals(grammar1Rules, grammar2Rules);
+        Set<String> commonNonterminals = grammarUtils.getCommonNonterminals(grammar1Rules, grammar2Rules);
         for(Rule rule:grammar1CopyRules){
             for(String common:commonNonterminals){
                 ArrayList<String> updatedTerminals1 = new ArrayList<>();
@@ -132,22 +146,6 @@ public class ConcatCommand implements Command {
         fileHandler.getFileContent().append(stringBuilder);
         grammarCommands.getGrammarSet().add(concat);
     }
-
-    private static Set<String> getCommonNonterminals(Set<Rule> grammar1Rules, Set<Rule> grammar2Rules) {
-        Set<String> grammar1Nonterminals = new LinkedHashSet<>();
-        Set<String> grammar2Nonterminals = new LinkedHashSet<>();
-        for(Rule rule: grammar1Rules){
-            grammar1Nonterminals.add(rule.getNonterminals());
-        }
-
-        for(Rule rule: grammar2Rules){
-            grammar2Nonterminals.add(rule.getNonterminals());
-        }
-        Set<String> commonNonterminals = new LinkedHashSet<>(grammar1Nonterminals);
-        commonNonterminals.retainAll(grammar2Nonterminals);
-        return commonNonterminals;
-    }
-
     private static String getTerminals(Rule retrieved1, Rule retrieved2) {
         assert retrieved1 != null;
         String rule1Nonterminals = retrieved1.getNonterminals();

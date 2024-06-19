@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * The type Chomsky command.
+ * The type ChomskyCommand. Checks if a Grammar is in Chomsky Normal Form. A Grammar is in Chomsky Normal Form when its Rules follow these patterns:
+ * A → BC,A → a, or S → ε.
  */
 public class ChomskyCommand implements Command {
     private final GrammarCommands grammarCommands;
@@ -22,7 +23,7 @@ public class ChomskyCommand implements Command {
     private final GrammarUtils grammarUtils;
 
     /**
-     * Instantiates a new Chomsky command.
+     * Instantiates a new ChomskyCommand.
      *
      * @param grammarCommands the grammar commands
      * @param fileHandler     the file handler
@@ -33,7 +34,17 @@ public class ChomskyCommand implements Command {
         this.fileHandler = fileHandler;
         this.grammarUtils =grammarUtils;
     }
-
+    /**
+     * Checks if a file is open and if it isn't a NoFileOpenException is thrown.
+     *Checks if the arguments length is the correct amount and if it isn't an InvalidInputException
+     * is thrown. Gets the Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
+     * The method iterates over all terminals of all Rules and checks if the terminals are in the correct formats. If it finds
+     * a single terminal that is not in normal form the checking process concludes and that means the Grammar is not in Chomsky Normal Form.
+     * @param input - the user input
+     * @throws InvalidInputException - when the number of input arguments doesn't match the command arguments count
+     * @throws NoFileOpenedException - when a file isn't open
+     * @throws GrammarIDNotFoundException - when a Grammar isn't found
+     */
     @Override
     public void invoke(String[] input) {
         if(fileHandler.isFileOpen()) {
@@ -53,10 +64,10 @@ public class ChomskyCommand implements Command {
     }
 
     /**
-     * Is cnf boolean.
+     * Checks if a Grammar is in Chomsky Normal Form.
      *
      * @param grammar the grammar
-     * @return the boolean
+     * @return boolean - true or false. Returns true if all terminals of all Rules are in normal form. Returns false otherwise.
      */
     protected boolean isCNF(Grammar grammar){
         for(Rule rule: grammar.getRules()){
@@ -68,6 +79,12 @@ public class ChomskyCommand implements Command {
         }
         return true;
     }
+    /**
+     * Checks if a terminal String is in Chomsky Normal Form.
+     *
+     * @param terminal the terminal String
+     * @return boolean - true or false. Returns true if the terminal is in normal form. Returns false otherwise.
+     */
     private boolean cnfTerminalParts(String terminal){
         boolean cnfTerminal = false;
         char[] terminalCharArr = terminal.trim().toCharArray();

@@ -13,7 +13,8 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 import java.util.*;
 
 /**
- * The type Iter command.
+ * The type IterCommand. Finds the result of the "iteration" operation over the Grammar(Kleene star) and creates a new
+ * Grammar. Prints the ID of the new Grammar.
  */
 public class IterCommand implements Command {
     private final GrammarCommands grammarCommands;
@@ -21,7 +22,7 @@ public class IterCommand implements Command {
     private final GrammarUtils grammarUtils;
 
     /**
-     * Instantiates a new Iter command.
+     * Instantiates a new IterCommand.
      *
      * @param grammarCommands the grammar commands
      * @param fileHandler     the file handler
@@ -32,7 +33,18 @@ public class IterCommand implements Command {
         this.fileHandler = fileHandler;
         this.grammarUtils = grammarUtils;
     }
-
+    /**
+     * Checks if a file is open and if it isn't a NoFileOpenException is thrown.
+     *Checks if the arguments length is the correct amount and if it isn't an InvalidInputException
+     * is thrown. Gets the Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
+     * The method creates a new Rule with the nonterminal to create the possibility of one or more repetitions of the first Rule and adds the new Rule
+     * before the first Rule. After that adds the rest of the rules of the Grammar.
+     * Appends the String representation of the new Grammar to the temp file content and adds the new Grammar to the Grammar Set.
+     * @param input - the user input
+     * @throws InvalidInputException - when the number of input arguments doesn't match the command arguments count
+     * @throws NoFileOpenedException - when a file isn't open
+     * @throws GrammarIDNotFoundException - when a Grammar isn't found
+     */
     @Override
     public void invoke(String[] input) {
         try {

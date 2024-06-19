@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 /**
- * The type SaveCommand.
+ * The type SaveCommand. Saves either the temporary file content or a Grammar to a file defined by the user.
  */
 public class SaveCommand implements Command {
     private final FileHandler fileHandler;

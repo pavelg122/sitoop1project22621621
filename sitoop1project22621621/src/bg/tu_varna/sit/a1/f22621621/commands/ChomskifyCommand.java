@@ -14,7 +14,8 @@ import bg.tu_varna.sit.a1.f22621621.utils.GrammarUtils;
 import java.util.*;
 
 /**
- * The type Chomskify command.
+ * The type ChomskifyCommand. Transforms a Grammar in Chomsky Normal Form if it is not already in the normal form.
+ * Prints the ID of the new Grammar.
  */
 public class ChomskifyCommand implements Command {
     private final GrammarCommands grammarCommands;
@@ -22,7 +23,7 @@ public class ChomskifyCommand implements Command {
     private final GrammarUtils grammarUtils;
 
     /**
-     * Instantiates a new Chomskify command.
+     * Instantiates a new ChomskifyCommand.
      *
      * @param grammarCommands the grammar commands
      * @param fileHandler     the file handler
@@ -33,9 +34,29 @@ public class ChomskifyCommand implements Command {
         this.fileHandler = fileHandler;
         this.grammarUtils =grammarUtils;
     }
-
+    /**
+     * Checks if a file is open and if it isn't a NoFileOpenException is thrown.
+     *Checks if the arguments length is the correct amount and if it isn't an InvalidInputException
+     * is thrown. Gets the Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
+     * First the method checks if the Grammar is already in Chomsky Normal Form and if it is a GrammarCNFMismatchException is thrown.
+     * If it isn't the Grammar is transformed into a Grammar that is in Chomsky Normal Form.
+     * The transformation happens in these main stages:
+     * <br>1. Start - removing the start symbol from the terminals of the Rules;
+     * <br>2. Del - removing empty Rules. An empty Rule has the form: A → ε;
+     * <br>3. Unit - removing unit Rules. A unit Rule has the form: A → B;
+     * <br>4. Term - removing term Rules. A term Rule has the form: A → X1...a...Xn;
+     * <br>5. Bin - removing bin Rules. A bin Rule has the form: A → X1X2...Xn.
+     * <br>After each stage the current state of the Grammar is displayed.
+     * When the transformation goes through all the stages the ID of the new Grammar is displayed, the Grammar is added to the Grammar Set and
+     * its String representation is appended to the file content.
+     * @param input - the user input
+     * @throws InvalidInputException - when the number of input arguments doesn't match the command arguments count
+     * @throws NoFileOpenedException - when a file isn't open
+     * @throws GrammarIDNotFoundException - when a Grammar isn't found
+     * @throws GrammarCNFMismatchException - if the Grammar is already in Chomsky Normal Form
+     */
     @Override
-    public void invoke(String[] input) {
+    public void invoke(String[] input) throws GrammarCNFMismatchException {
         try {
             if (fileHandler.isFileOpen()) {
                 if(input.length !=1){
@@ -53,7 +74,10 @@ public class ChomskifyCommand implements Command {
                 Set<Rule> rules = grammar.getRules();
                 Set<Rule> grammarCopyRules = new LinkedHashSet<>();
 
-                //добавяне на ново правило в началото
+                /*
+                 * Stage 1. Start - adding a new Rule in the beginning if the nonterminal of the first Rule
+                 * is contained in any terminal String of a Rule
+                 */
                 Iterator<Rule> iterator1 = rules.iterator();
                 Rule retrieved1 = null;
                 if (iterator1.hasNext()) {
@@ -76,15 +100,19 @@ public class ChomskifyCommand implements Command {
                     firstRuleTerminal.add(firstRuleNonterminal);
                     grammarCopyRules.add(new Rule(startNonterminals, firstRuleTerminal));
                 }
-
+                //creating copies of all Rules of the Grammar
                 for (Rule rule : rules) {
                     grammarCopyRules.add(rule.copy());
                 }
-
+                //printing the Rules after the start stage
                 System.out.println("Rules after start:");
                 grammarUtils.printStepRules(grammarCopyRules);
 
-                //премахване на правила с празен символ  (A → ε)
+                /*
+                 * Stage 2. Del - removing empty Rules. An empty Rule has the form: A → ε. This kind of Rule gets
+                 * removed by finding all rules that contain the empty symbol and each rule gets replaced by all combinations
+                 * where one or more instances of the nonterminal of the empty Rule gets removed.
+                 */
                 Iterator<Rule> iterator2 = grammarCopyRules.iterator();
                 Set<Rule> removedEmptyRules = new LinkedHashSet<>();
                 String epsilon = "ε";
@@ -108,7 +136,7 @@ public class ChomskifyCommand implements Command {
                         }
                     }
                 }
-
+                //updating all terminals
                 for (Rule removed : removedEmptyRules) {
                     iterator2 = grammarCopyRules.iterator();
                     while (iterator2.hasNext()) {
@@ -126,9 +154,16 @@ public class ChomskifyCommand implements Command {
 
                     }
                 }
+                //printing the Rules after the del stage
                 System.out.println("Rules after del:");
                 grammarUtils.printStepRules(grammarCopyRules);
-                //премахване на юнит правила (A → B)
+                /*
+                 * Stage 3. Unit - removing unit Rules. A unit Rule has the form: A → B. This kind of Rule gets
+                 * removed by separating all unit Rules and all other Rules. After that the symbol that is on the right side
+                 * gets replaced by all terminals of the Rule that has the same nonterminal symbol(left side) as the one being replaced.
+                 * In the example A → B: the symbol B will be replaced by the terminals of the rule that has B on the left side( B → xx).
+                 * The rule A → B will become A → xx .
+                 */
                 Iterator<Rule> iterator3 = grammarCopyRules.iterator();
                 Set<Rule> unitRules = new HashSet<>();
                 Set<Rule> noUnitRules = new HashSet<>();
@@ -153,7 +188,7 @@ public class ChomskifyCommand implements Command {
                         noUnitRules.add(new Rule(nonterminal, noUnitTerminals));
                     }
                 }
-
+                //updating all terminals
                 for (Rule unitRule : unitRules) {
                     for (Rule oldRule : grammarCopyRules) {
                         Set<String> oldRuleTerminalsCopy = new LinkedHashSet<>(oldRule.getTerminals());
@@ -171,11 +206,16 @@ public class ChomskifyCommand implements Command {
                         oldRule.setTerminals(updatedTerminals);
                     }
                 }
-
+                //printing the Rules after the unit stage
                 System.out.println("Rules after unit:");
                 grammarUtils.printStepRules(grammarCopyRules);
 
-                //премахване на правила с несамотни терминали (A → aB)
+                /*
+                 * Stage 4. Term - removing term Rules. A term Rule has the form: A → X1...a...Xn. This kind of Rule gets
+                 * removed by first finding all term Rules. After that for each terminal(lowercase letter or number) in the terminal String
+                 * of every Rule(right side) a new Rule gets created that has the lowecase letter as the right side of the Rule. After that each terminal
+                 * gets replaced by the nonterminal symbol of the new Rule.
+                 */
                 ArrayList<String> allTerminals = new ArrayList<>(Arrays.asList(grammarUtils.getAllTerminals()));
                 Set<String> termSet = new LinkedHashSet<>();
                 for (Rule retrieved : grammarCopyRules) {
@@ -200,6 +240,7 @@ public class ChomskifyCommand implements Command {
                     newTermRules.add(new Rule(nonterminal, newTermRuleTerminals));
                     grammarCopyRules.add(new Rule(nonterminal, newTermRuleTerminals));
                 }
+                //updating all terminals
                 for (Rule newTermRule : newTermRules) {
                     String term = newTermRule.getTerminals().getFirst();
                     String nonterminal = newTermRule.getNonterminals();
@@ -224,7 +265,7 @@ public class ChomskifyCommand implements Command {
                     }
                 }
                 Set<Rule> rulesToAdd = new LinkedHashSet<>();
-                //корекция на новите правила
+                //correction of the new Rules
                 for (Rule newr : newTermRules) {
                     for (Rule rule : grammarCopyRules) {
                         if (rule.getNonterminals().equals(newr.getNonterminals())) {
@@ -256,19 +297,23 @@ public class ChomskifyCommand implements Command {
                     }
                     grammarCopyRules.addAll(rulesToAdd);
                 }
-
+                //printing the Rules after the term stage
                 System.out.println("Rules after term:");
                 grammarUtils.printStepRules(grammarCopyRules);
                 //премахване на правила с 2+ нетерминали отдясно (A → BCD)
-
-                //Set<String> newBinTerminals = new LinkedHashSet<>();
+                /*
+                 * Stage 5. Bin - Bin - removing bin Rules. A bin Rule has the form: A → X1X2...Xn. This kind of Rule gets
+                 * removed by finding all Rules that have more than 2 nonterminal symbols, and they have nonterminal symbols only in their
+                 * right side. A new Rule gets created with the first 2 nonterminal symbols and after that the first 2 symbols get replaced
+                 * by the nonterminal of the new Rule. If a change has occurred the old Rule gets updated.
+                 */
                 ArrayList<String> newBinTerminals = new ArrayList<>();
                 for (Rule retrieved : grammarCopyRules) {
                     ArrayList<String> ruleTerminals = retrieved.getTerminals();
                     for (String terminal : ruleTerminals) {
                         if (grammarUtils.charsCount(terminal.trim(), grammarUtils.getAllNonterminals()) == terminal.trim().length() && terminal.trim().length() > 2) {
                             StringBuilder newTerminal = new StringBuilder();
-                            //първите два нетерминала - BC
+                            //first two nonterminals - BC
                             String[] terminalParts = terminal.split("");
                             newTerminal.append(terminalParts[0]).append(terminalParts[1]);
                             newBinTerminals.add(String.valueOf(newTerminal));
@@ -284,6 +329,7 @@ public class ChomskifyCommand implements Command {
                     newBinRules.add(new Rule(nonterminal, newBinRuleTerminals));
                     grammarCopyRules.add(new Rule(nonterminal, newBinRuleTerminals));
                 }
+                //updating all terminals
                 for (Rule binRule : newBinRules) {
                     String term = binRule.getTerminals().getFirst();
                     String nonterminal = binRule.getNonterminals();
@@ -312,7 +358,7 @@ public class ChomskifyCommand implements Command {
                         }
                     }
                 }
-
+                //printing the Rules after the bin stage
                 System.out.println("Rules after bin:");
                 grammarUtils.printStepRules(grammarCopyRules);
 

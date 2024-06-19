@@ -7,7 +7,7 @@ import bg.tu_varna.sit.a1.f22621621.interfaces.FileHandler;
 import bg.tu_varna.sit.a1.f22621621.interfaces.GrammarCommands;
 
 /**
- * The type ListCommand.
+ * The type ListCommand. Prints the IDs of all loaded Grammars in the application.
  */
 public class ListCommand implements Command {
     private final GrammarCommands grammarCommands;

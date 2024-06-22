@@ -47,6 +47,7 @@ public class ChomskyCommand implements Command {
      */
     @Override
     public void invoke(String[] input) {
+        try{
         if(fileHandler.isFileOpen()) {
             if(input.length !=1){
                 throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the chomsky command.");
@@ -61,6 +62,7 @@ public class ChomskyCommand implements Command {
                 System.out.println("Grammar " + grammar.getId() + " isn't in Chomsky Normal Form.");
             }
         }else throw new NoFileOpenedException("No file opened. Please type help to see the correct syntax for the open command.");
+        }catch(Exception e){System.out.println(e.getMessage());}
     }
 
     /**

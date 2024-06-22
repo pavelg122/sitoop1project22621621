@@ -68,8 +68,15 @@ public class CommandHandler {
                 String[] input = new String[]{};
                 if (parts.length > 1) input = parts[1].split(" ");
                 Command cmd = commands.get(commandName);
-                if (cmd != null) cmd.invoke(input);
-                else throw new InvalidCommandException("Invalid command " + commandName + ". Please type help to see all commands.");
+                try {
+                    if (cmd != null) {
+                        cmd.invoke(input);
+                    } else {
+                        throw new InvalidCommandException("Invalid command " + commandName + ". Please type help to see all commands.");
+                    }
+                } catch (InvalidCommandException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }catch (Exception e) {System.out.println(e.getMessage());}
     }

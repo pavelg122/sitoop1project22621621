@@ -41,7 +41,7 @@ public class AddRuleCommand implements Command {
     public void invoke(String[] input) {
         try{
             if(fileHandler.isFileOpen()) {
-                if(input.length !=2){
+                if(input.length <=2){
                     throw new InvalidInputException("Invalid number of arguments. Please type help to see the correct syntax for the addRule command.");
                 }
                 addRule(input);

@@ -40,12 +40,8 @@ public class ChomskifyCommand implements Command {
      * is thrown. Gets the Grammar from the Grammar Set and if that operation fails a GrammarIDNotFoundException is thrown.
      * First the method checks if the Grammar is already in Chomsky Normal Form and if it is a GrammarCNFMismatchException is thrown.
      * If it isn't the Grammar is transformed into a Grammar that is in Chomsky Normal Form.
-     * The transformation happens in these main stages:
-     * <br>1. Start - removing the start symbol from the terminals of the Rules;
-     * <br>2. Del - removing empty Rules. An empty Rule has the form: A → ε;
-     * <br>3. Unit - removing unit Rules. A unit Rule has the form: A → B;
-     * <br>4. Term - removing term Rules. A term Rule has the form: A → X1...a...Xn;
-     * <br>5. Bin - removing bin Rules. A bin Rule has the form: A → X1X2...Xn.
+     * The conversion of a Grammar to Chomsky Normal Form happens with the following order of transformations:
+     * Start, Del, Unit, Term, Bin.
      * <br>After each stage the current state of the Grammar is displayed.
      * When the transformation goes through all the stages the ID of the new Grammar is displayed, the Grammar is added to the Grammar Set and
      * its String representation is appended to the file content.
@@ -300,7 +296,6 @@ public class ChomskifyCommand implements Command {
                 //printing the Rules after the term stage
                 System.out.println("Rules after term:");
                 grammarUtils.printStepRules(grammarCopyRules);
-                //премахване на правила с 2+ нетерминали отдясно (A → BCD)
                 /*
                  * Stage 5. Bin - Bin - removing bin Rules. A bin Rule has the form: A → X1X2...Xn. This kind of Rule gets
                  * removed by finding all Rules that have more than 2 nonterminal symbols, and they have nonterminal symbols only in their
